@@ -1,19 +1,21 @@
-package com.daniyelp.hydrationapp.dailygoal
+package com.daniyelp.hydrationapp.quantity
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DailyGoalScreen() {
+fun QuantityScreen(
+    title: String,
+    description: String
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Daily Goal")
+                    Text(text = title)
                 },
                 navigationIcon = {
                     IconButton(onClick = { }) {
