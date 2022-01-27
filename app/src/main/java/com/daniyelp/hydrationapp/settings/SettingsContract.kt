@@ -22,10 +22,10 @@ class SettingsContract {
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation: Effect() {
-            object NavigateUp: Navigation()
-            object NavigateToUnits: Navigation()
-            object NavigateToDailyGoal: Navigation()
-            data class NavigateToContainer(val containerId: Int)
+            object Up: Navigation()
+            object ToUnits: Navigation()
+            object ToDailyGoal: Navigation()
+            data class ToContainer(val containerId: Int): Navigation()
         }
     }
 }

@@ -5,12 +5,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.daniyelp.hydrationapp.home.history.HistoryScreen
+import com.daniyelp.hydrationapp.home.today.TodayContract
 import com.daniyelp.hydrationapp.home.today.TodayScreen
+import com.daniyelp.hydrationapp.home.today.TodayViewModel
 import com.daniyelp.hydrationapp.navigation.AppDestinations
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
@@ -19,8 +23,20 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
         route = AppDestinations.Home.route
     ) {
         composable(route = AppDestinations.Home.Today.route) {
+            val todayViewModel = viewModel<TodayViewModel>()
             HomeScreen(navController) {
-                TodayScreen()
+                TodayScreen(
+                    state = todayViewModel.viewState.value,
+                    onSendEvent = todayViewModel::setEvent,
+                    effects = todayViewModel.effect,
+                    onNavigationRequest = { navEffect ->
+                        when(navEffect) {
+                            TodayContract.Effect.Navigation.ToSettings -> {
+                                navController.navigate(AppDestinations.Settings.route)
+                            }
+                        }
+                    }
+                )
             }
         }
         composable(route = AppDestinations.Home.History.route) {

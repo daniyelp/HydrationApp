@@ -9,7 +9,7 @@ class HistoryContract {
     sealed class Event : ViewEvent {}
 
     data class State(
-        val dayProgressList: List<DayProgress>
+        val dayProgressList: List<DayProgress> = emptyList()
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {}

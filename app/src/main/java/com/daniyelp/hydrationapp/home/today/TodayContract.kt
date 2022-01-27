@@ -19,5 +19,9 @@ class TodayContract {
         val containers: List<Container>
     ) : ViewState
 
-    sealed class Effect : ViewSideEffect {}
+    sealed class Effect : ViewSideEffect {
+        sealed class Navigation: Effect() {
+            object ToSettings: Navigation()
+        }
+    }
 }

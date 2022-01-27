@@ -17,7 +17,7 @@ class UnitsContract {
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation: Effect() {
-            object NavigateUp: Navigation()
+            object Up: Navigation()
         }
     }
 }

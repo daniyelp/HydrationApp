@@ -2,5 +2,8 @@ package com.daniyelp.hydrationapp.data.model
 
 enum class QuantityUnit {
     Milliliter,
-    Ounce
+    Ounce;
+    companion object {
+        fun getUnits() = values().toList()
+    }
 }
