@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.today
+package com.daniyelp.hydrationapp.home.today
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons

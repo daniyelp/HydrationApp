@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.history
+package com.daniyelp.hydrationapp.home.history
 
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
