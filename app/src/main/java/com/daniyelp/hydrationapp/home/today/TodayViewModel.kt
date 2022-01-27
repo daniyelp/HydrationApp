@@ -10,7 +10,7 @@ class TodayViewModel
     override fun setInitialState(): TodayContract.State {
         return TodayContract.State(
             QuantityUnit.Milliliter,
-            0,
+            2000,
             0,
             Container.getContainers()
         )
@@ -24,7 +24,8 @@ class TodayViewModel
     }
 
     private fun selectContainer(containerId: Int) {
-
+        val quantityAdded = Container.getContainer(containerId).quantityInMilliliters
+        setState { viewState.value.copy(currentQuantity = currentQuantity + quantityAdded) }
     }
 
     private fun navigateToSettings() {
