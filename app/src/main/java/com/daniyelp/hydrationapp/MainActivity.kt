@@ -9,18 +9,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.daniyelp.hydrationapp.home.homeNavGraph
+import com.daniyelp.hydrationapp.presentation.home.homeNavGraph
 import com.daniyelp.hydrationapp.navigation.AppDestinations
-import com.daniyelp.hydrationapp.quantity.QuantityContract
-import com.daniyelp.hydrationapp.quantity.QuantityScreen
-import com.daniyelp.hydrationapp.quantity.QuantityViewModel
-import com.daniyelp.hydrationapp.settings.SettingsContract
-import com.daniyelp.hydrationapp.settings.SettingsScreen
-import com.daniyelp.hydrationapp.settings.SettingsViewModel
-import com.daniyelp.hydrationapp.ui.theme.HydrationAppTheme
-import com.daniyelp.hydrationapp.units.UnitsContract
-import com.daniyelp.hydrationapp.units.UnitsScreen
-import com.daniyelp.hydrationapp.units.UnitsViewModel
+import com.daniyelp.hydrationapp.presentation.quantity.QuantityContract
+import com.daniyelp.hydrationapp.presentation.quantity.QuantityScreen
+import com.daniyelp.hydrationapp.presentation.quantity.QuantityViewModel
+import com.daniyelp.hydrationapp.presentation.settings.SettingsContract
+import com.daniyelp.hydrationapp.presentation.settings.SettingsScreen
+import com.daniyelp.hydrationapp.presentation.settings.SettingsViewModel
+import com.daniyelp.hydrationapp.presentation.theme.HydrationAppTheme
+import com.daniyelp.hydrationapp.presentation.units.UnitsContract
+import com.daniyelp.hydrationapp.presentation.units.UnitsScreen
+import com.daniyelp.hydrationapp.presentation.units.UnitsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

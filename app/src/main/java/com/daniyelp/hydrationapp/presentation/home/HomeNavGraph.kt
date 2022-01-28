@@ -1,20 +1,19 @@
-package com.daniyelp.hydrationapp.home
+package com.daniyelp.hydrationapp.presentation.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.daniyelp.hydrationapp.home.history.HistoryScreen
-import com.daniyelp.hydrationapp.home.today.TodayContract
-import com.daniyelp.hydrationapp.home.today.TodayScreen
-import com.daniyelp.hydrationapp.home.today.TodayViewModel
+import com.daniyelp.hydrationapp.presentation.home.history.HistoryScreen
+import com.daniyelp.hydrationapp.presentation.home.today.TodayContract
+import com.daniyelp.hydrationapp.presentation.home.today.TodayScreen
+import com.daniyelp.hydrationapp.presentation.home.today.TodayViewModel
 import com.daniyelp.hydrationapp.navigation.AppDestinations
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {

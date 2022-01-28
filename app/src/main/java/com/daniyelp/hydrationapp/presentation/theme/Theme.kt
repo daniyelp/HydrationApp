@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.ui.theme
+package com.daniyelp.hydrationapp.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

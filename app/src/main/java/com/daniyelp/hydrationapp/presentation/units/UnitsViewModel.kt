@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.units
+package com.daniyelp.hydrationapp.presentation.units
 
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.QuantityUnit

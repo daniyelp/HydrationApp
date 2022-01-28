@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.home.today
+package com.daniyelp.hydrationapp.presentation.home.today
 
 import com.daniyelp.hydrationapp.ViewEvent
 import com.daniyelp.hydrationapp.ViewSideEffect

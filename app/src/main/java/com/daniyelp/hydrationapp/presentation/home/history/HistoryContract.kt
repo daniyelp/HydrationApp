@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.home.history
+package com.daniyelp.hydrationapp.presentation.home.history
 
 import com.daniyelp.hydrationapp.ViewEvent
 import com.daniyelp.hydrationapp.ViewSideEffect

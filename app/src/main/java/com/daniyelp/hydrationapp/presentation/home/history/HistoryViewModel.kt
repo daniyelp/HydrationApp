@@ -1,7 +1,6 @@
-package com.daniyelp.hydrationapp.home.history
+package com.daniyelp.hydrationapp.presentation.home.history
 
 import com.daniyelp.hydrationapp.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 class HistoryViewModel
     : BaseViewModel<HistoryContract.Event, HistoryContract.State, HistoryContract.Effect>() {

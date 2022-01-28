@@ -1,9 +1,8 @@
-package com.daniyelp.hydrationapp.home.today
+package com.daniyelp.hydrationapp.presentation.home.today
 
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 class TodayViewModel
     : BaseViewModel<TodayContract.Event, TodayContract.State, TodayContract.Effect>() {

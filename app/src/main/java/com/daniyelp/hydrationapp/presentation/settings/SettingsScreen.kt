@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.settings
+package com.daniyelp.hydrationapp.presentation.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*

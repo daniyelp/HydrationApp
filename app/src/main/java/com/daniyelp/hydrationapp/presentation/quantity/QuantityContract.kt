@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.quantity
+package com.daniyelp.hydrationapp.presentation.quantity
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.daniyelp.hydrationapp.ViewEvent

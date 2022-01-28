@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.settings
+package com.daniyelp.hydrationapp.presentation.settings
 
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container

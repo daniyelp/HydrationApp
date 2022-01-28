@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.units
+package com.daniyelp.hydrationapp.presentation.units
 
 import com.daniyelp.hydrationapp.ViewEvent
 import com.daniyelp.hydrationapp.ViewSideEffect
