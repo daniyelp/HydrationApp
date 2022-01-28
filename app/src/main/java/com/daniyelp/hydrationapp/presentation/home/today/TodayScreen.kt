@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -37,6 +34,8 @@ fun TodayScreen(
     onNavigationRequest: (TodayContract.Effect.Navigation) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val currentQuantityValue by derivedStateOf { state.currentQuantity.getValue(state.unit) }
+    val dailyGoalValue by derivedStateOf { state.dailyGoal.getValue(state.unit) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,25 +81,25 @@ fun TodayScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "${state.currentQuantity * 100 / state.dailyGoal}%",
+                    text = "${currentQuantityValue * 100 / if(dailyGoalValue != 0) dailyGoalValue else 1}%",
                     fontWeight = FontWeight.Bold,
                     fontSize = MaterialTheme.typography.h3.fontSize
                 )
                 Text(
-                    text = "of ${state.dailyGoal} ml Goal"
+                    text = "of $dailyGoalValue ${state.unit.toShortString()} Goal"
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val fillRatio by derivedStateOf {
-                    (state.currentQuantity / state.dailyGoal.toFloat()).coerceIn(0f, 1f)
+                    (currentQuantityValue / if(dailyGoalValue != 0) dailyGoalValue.toFloat() else 1f).coerceIn(0f, 1f)
                 }
-                Glass(topWidth = screenWidth / 2, fillRatio = fillRatio, quantity = state.currentQuantity.toString().plus(" ml"))
+                Glass(topWidth = screenWidth / 2, fillRatio = fillRatio, quantity = "$currentQuantityValue ${state.unit.toShortString()}")
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     state.containers.forEach { container ->
                         Button(
                             onClick = { onSendEvent(TodayContract.Event.SelectContainer(container.id))}
                         ) {
-                            Text(text = container.quantity.toString().plus(" ml"))
+                            Text(text = "${container.quantity.getValue(state.unit)} ${state.unit.toShortString()}")
                         }
                     }
                 }

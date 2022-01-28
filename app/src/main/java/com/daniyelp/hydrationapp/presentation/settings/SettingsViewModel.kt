@@ -3,6 +3,7 @@ package com.daniyelp.hydrationapp.presentation.settings
 import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container
+import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,9 +16,8 @@ class SettingsViewModel @Inject constructor(
 
     override fun setInitialState(): SettingsContract.State {
         return SettingsContract.State(
-           QuantityUnit.Milliliter,
-            2000,
-            Container.getContainers()
+            QuantityUnit.Milliliter,
+            Quantity(0, QuantityUnit.Milliliter),
         )
     }
 

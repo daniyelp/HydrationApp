@@ -4,6 +4,7 @@ import com.daniyelp.hydrationapp.ViewEvent
 import com.daniyelp.hydrationapp.ViewSideEffect
 import com.daniyelp.hydrationapp.ViewState
 import com.daniyelp.hydrationapp.data.model.Container
+import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 
 class TodayContract {
@@ -14,9 +15,9 @@ class TodayContract {
 
     data class State(
         val unit: QuantityUnit,
-        val dailyGoal: Int,
-        val currentQuantity: Int,
-        val containers: List<Container>
+        val dailyGoal: Quantity,
+        val currentQuantity: Quantity,
+        val containers: List<Container> = Container.getContainers()
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

@@ -1,14 +1,20 @@
 package com.daniyelp.hydrationapp.presentation.quantity
 
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class QuantityViewModel
-    : BaseViewModel<QuantityContract.Event, QuantityContract.State, QuantityContract.Effect>() {
+@HiltViewModel
+class QuantityViewModel @Inject constructor(
+    private val preferencesRepository: PreferencesRepository,
+): BaseViewModel<QuantityContract.Event, QuantityContract.State, QuantityContract.Effect>() {
     override fun setInitialState(): QuantityContract.State {
         return QuantityContract.State(
-            quantityInput = TextFieldValue("2000"),
+            quantityInput = TextFieldValue(""),
             unit = QuantityUnit.Milliliter
         )
     }
@@ -18,6 +24,12 @@ class QuantityViewModel
             QuantityContract.Event.Cancel -> cancel()
             QuantityContract.Event.Save -> save()
             is QuantityContract.Event.SetQuantity -> setQuantity(event.quantityInput)
+        }
+    }
+
+    init {
+        preferencesRepository.readPreferredUnit(viewModelScope) {
+            setState { viewState.value.copy(unit = it) }
         }
     }
 

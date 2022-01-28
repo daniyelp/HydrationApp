@@ -4,10 +4,11 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 
 class Quantity(value: Int, unit: QuantityUnit) {
-    private val value: Int = value * unit.toAnotherRatio(QuantityUnit.Milliliter).toInt()
+    private val value: Int = (value * unit.toAnotherRatio(QuantityUnit.Milliliter)).toInt()
     fun getValue(unit: QuantityUnit): Int =
-        value * QuantityUnit.Milliliter.toAnotherRatio(unit).toInt()
+        (value * QuantityUnit.Milliliter.toAnotherRatio(unit)).toInt()
 }
+operator fun Quantity.plus(another: Quantity) = Quantity(this.getValue(QuantityUnit.Milliliter) + another.getValue(QuantityUnit.Milliliter), QuantityUnit.Milliliter)
 
 enum class QuantityUnit {
     Milliliter,

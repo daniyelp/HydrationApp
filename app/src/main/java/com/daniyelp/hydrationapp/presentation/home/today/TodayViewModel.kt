@@ -1,16 +1,24 @@
 package com.daniyelp.hydrationapp.presentation.home.today
 
+import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container
+import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.model.plus
+import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class TodayViewModel
-    : BaseViewModel<TodayContract.Event, TodayContract.State, TodayContract.Effect>() {
+@HiltViewModel
+class TodayViewModel @Inject constructor(
+    private val preferencesRepository: PreferencesRepository,
+): BaseViewModel<TodayContract.Event, TodayContract.State, TodayContract.Effect>() {
     override fun setInitialState(): TodayContract.State {
         return TodayContract.State(
             QuantityUnit.Milliliter,
-            2000,
-            0,
+            Quantity(2000, QuantityUnit.Milliliter),
+            Quantity(0, QuantityUnit.Milliliter),
             Container.getContainers()
         )
     }
@@ -19,6 +27,12 @@ class TodayViewModel
         when(event) {
             TodayContract.Event.NavigateToSettings -> navigateToSettings()
             is TodayContract.Event.SelectContainer -> selectContainer(event.containerId)
+        }
+    }
+
+    init {
+        preferencesRepository.readPreferredUnit(viewModelScope) {
+            setState { viewState.value.copy(unit = it) }
         }
     }
 

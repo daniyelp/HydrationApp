@@ -58,14 +58,14 @@ fun SettingsScreen(
             Divider()
             SettingsSimpleItem(
                 title = "Daily Goal",
-                subtitle = "${state.dailyGoal} ${state.unit.toShortString()}",
+                subtitle = "${state.dailyGoal.getValue(state.unit)} ${state.unit.toShortString()}",
                 onClick = { onSendEvent(SettingsContract.Event.SelectDailyGoal) }
             )
             SettingsCategory(text = "Containers")
             state.containers.forEach {
                 SettingsSimpleItem(
                     title = "Container ${it.id}",
-                    subtitle = "${it.quantity} ${state.unit.toShortString()}",
+                    subtitle = "${it.quantity.getValue(state.unit)} ${state.unit.toShortString()}",
                     onClick = { onSendEvent(SettingsContract.Event.SelectContainer(it.id)) }
                 )
                 Divider()

@@ -76,7 +76,7 @@ private fun SettingsScreenDestination(navController: NavController) {
 
 @Composable
 private fun DailyGoalScreenDestination(navController: NavController) {
-    val quantityViewModel = viewModel<QuantityViewModel>()
+    val quantityViewModel = hiltViewModel<QuantityViewModel>()
     QuantityScreen(
         title = "Daily Goal",
         description = "Here you can set your hydration goal based on your preferred unit of measurement",
@@ -95,7 +95,7 @@ private fun DailyGoalScreenDestination(navController: NavController) {
 
 @Composable
 private fun ContainerScreenDestination(navController: NavController) {
-    val quantityViewModel = viewModel<QuantityViewModel>()
+    val quantityViewModel = hiltViewModel<QuantityViewModel>()
     QuantityScreen(
         title = "Container x",
         description = "Here you can specify your container size so it would be easier for you to enter your daily liquid intake",

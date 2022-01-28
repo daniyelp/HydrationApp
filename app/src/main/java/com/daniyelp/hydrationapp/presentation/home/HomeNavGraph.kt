@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -22,7 +23,7 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
         route = AppDestinations.Home.route
     ) {
         composable(route = AppDestinations.Home.Today.route) {
-            val todayViewModel = viewModel<TodayViewModel>()
+            val todayViewModel = hiltViewModel<TodayViewModel>()
             HomeScreen(navController) {
                 TodayScreen(
                     state = todayViewModel.viewState.value,
