@@ -9,7 +9,7 @@ import com.daniyelp.hydrationapp.data.model.QuantityUnit
 class SettingsContract {
     sealed class Event : ViewEvent {
         object NavigateUp: Event()
-        object SelectUnits: Event()
+        data class SelectUnit(val unit: QuantityUnit): Event()
         object SelectDailyGoal: Event()
         data class SelectContainer(val containerId: Int): Event()
     }
@@ -23,7 +23,6 @@ class SettingsContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation: Effect() {
             object Up: Navigation()
-            object ToUnits: Navigation()
             object ToDailyGoal: Navigation()
             data class ToContainer(val containerId: Int): Navigation()
         }

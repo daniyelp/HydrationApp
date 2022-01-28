@@ -36,9 +36,6 @@ class MainActivity : ComponentActivity() {
                     composable(AppDestinations.Settings.route) {
                         SettingsScreenDestination(navController)
                     }
-                    composable(AppDestinations.Units.route) {
-                        UnitsScreenDestination(navController)
-                    }
                     composable(AppDestinations.DailyGoal.route) {
                         DailyGoalScreenDestination(navController)
                     }
@@ -66,28 +63,8 @@ private fun SettingsScreenDestination(navController: NavController) {
                 SettingsContract.Effect.Navigation.ToDailyGoal -> {
                     navController.navigate(AppDestinations.DailyGoal.route)
                 }
-                SettingsContract.Effect.Navigation.ToUnits -> {
-                    navController.navigate(AppDestinations.Units.route)
-                }
                 is SettingsContract.Effect.Navigation.ToContainer -> {
                     navController.navigate(AppDestinations.Container.route)
-                }
-            }
-        }
-    )
-}
-
-@Composable
-private fun UnitsScreenDestination(navController: NavController) {
-    val unitsViewModel = viewModel<UnitsViewModel>()
-    UnitsScreen(
-        state = unitsViewModel.viewState.value,
-        onSendEvent = unitsViewModel::setEvent,
-        effects = unitsViewModel.effect,
-        onNavigationRequest = { navEffect ->
-            when (navEffect) {
-                UnitsContract.Effect.Navigation.Up -> {
-                    navController.popBackStack()
                 }
             }
         }
@@ -98,6 +75,8 @@ private fun UnitsScreenDestination(navController: NavController) {
 private fun DailyGoalScreenDestination(navController: NavController) {
     val quantityViewModel = viewModel<QuantityViewModel>()
     QuantityScreen(
+        title = "Daily Goal",
+        description = "Here you can set your hydration goal based on your preferred unit of measurement",
         state = quantityViewModel.viewState.value,
         onSendEvent = quantityViewModel::setEvent,
         effects = quantityViewModel.effect,
@@ -115,6 +94,8 @@ private fun DailyGoalScreenDestination(navController: NavController) {
 private fun ContainerScreenDestination(navController: NavController) {
     val quantityViewModel = viewModel<QuantityViewModel>()
     QuantityScreen(
+        title = "Container x",
+        description = "Here you can specify your container size so it would be easier for you to enter your daily liquid intake",
         state = quantityViewModel.viewState.value,
         onSendEvent = quantityViewModel::setEvent,
         effects = quantityViewModel.effect,

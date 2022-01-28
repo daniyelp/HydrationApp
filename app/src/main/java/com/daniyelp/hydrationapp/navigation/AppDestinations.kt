@@ -13,7 +13,6 @@ object AppDestinations {
         object Today: HomeScreen("today", Icons.Default.LocalDrink, "Today")
     }
     object Settings: Screen("settings")
-    object Units: Screen("units")
     object DailyGoal: Screen("dailygoal")
     object Container: Screen("container")
 }

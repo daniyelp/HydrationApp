@@ -8,6 +8,7 @@ class QuantityViewModel
     : BaseViewModel<QuantityContract.Event, QuantityContract.State, QuantityContract.Effect>() {
     override fun setInitialState(): QuantityContract.State {
         return QuantityContract.State(
+            quantityInput = TextFieldValue("2000"),
             unit = QuantityUnit.Milliliter
         )
     }

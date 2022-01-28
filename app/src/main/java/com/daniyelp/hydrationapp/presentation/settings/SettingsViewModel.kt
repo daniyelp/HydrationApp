@@ -9,7 +9,7 @@ class SettingsViewModel
     override fun setInitialState(): SettingsContract.State {
         return SettingsContract.State(
            QuantityUnit.Milliliter,
-            0,
+            2000,
             Container.getContainers()
         )
     }
@@ -17,7 +17,7 @@ class SettingsViewModel
     override fun handleEvents(event: SettingsContract.Event) {
         when(event) {
             SettingsContract.Event.NavigateUp -> navigateUp()
-            SettingsContract.Event.SelectUnits -> selectUnits()
+            is SettingsContract.Event.SelectUnit -> selectUnit(event.unit)
             SettingsContract.Event.SelectDailyGoal -> selectDailyGoal()
             is SettingsContract.Event.SelectContainer -> selectContainer(event.containerId)
         }
@@ -31,8 +31,8 @@ class SettingsViewModel
         setEffect { SettingsContract.Effect.Navigation.ToContainer(containerId) }
     }
 
-    private fun selectUnits() {
-        setEffect { SettingsContract.Effect.Navigation.ToUnits }
+    private fun selectUnit(unit: QuantityUnit) {
+        setState { viewState.value.copy(unit = unit) }
     }
 
     private fun navigateUp() {

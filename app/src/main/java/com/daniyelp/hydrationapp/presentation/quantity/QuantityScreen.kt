@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun QuantityScreen(
+    title: String,
+    description: String,
     state: QuantityContract.State,
     onSendEvent: (QuantityContract.Event) -> Unit,
     effects: Flow<QuantityContract.Effect>,
@@ -31,7 +33,7 @@ fun QuantityScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Hello")
+                    Text(text = title)
                 },
                 navigationIcon = {
                     IconButton(onClick = { onSendEvent(QuantityContract.Event.Cancel )}) {
@@ -61,7 +63,7 @@ fun QuantityScreen(
                     .widthIn(max = screenWidth * 3 / 4)
                     .padding(top = 24.dp)
                     .align(Alignment.TopCenter),
-                text = "Here you can set your hydration goal based on your preferred unit of measurement",
+                text = description,
                 textAlign = TextAlign.Center
             )
             Column(
@@ -81,7 +83,7 @@ fun QuantityScreen(
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "milliliters (ml)")
+                Text(text = "${state.unit.toString()} (${state.unit.toShortString()})")
             }
         }
     }
