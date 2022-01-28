@@ -21,7 +21,7 @@ class QuantityViewModel
     }
 
     private fun setQuantity(quantityInput: TextFieldValue) {
-
+        setState { viewState.value.copy(quantityInput = quantityInput) }
     }
 
     private fun cancel() {
