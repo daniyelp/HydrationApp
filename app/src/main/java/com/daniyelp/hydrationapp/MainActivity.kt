@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -21,7 +22,9 @@ import com.daniyelp.hydrationapp.presentation.theme.HydrationAppTheme
 import com.daniyelp.hydrationapp.presentation.units.UnitsContract
 import com.daniyelp.hydrationapp.presentation.units.UnitsScreen
 import com.daniyelp.hydrationapp.presentation.units.UnitsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun SettingsScreenDestination(navController: NavController) {
-    val settingsViewModel = viewModel<SettingsViewModel>()
+    val settingsViewModel = hiltViewModel<SettingsViewModel>()
     SettingsScreen(
         state = settingsViewModel.viewState.value,
         onSendEvent = settingsViewModel::setEvent,

@@ -1,6 +1,5 @@
 package com.daniyelp.hydrationapp.presentation.settings
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,14 +9,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -71,7 +65,7 @@ fun SettingsScreen(
             state.containers.forEach {
                 SettingsSimpleItem(
                     title = "Container ${it.id}",
-                    subtitle = "${it.quantityInMilliliters} ${state.unit.toShortString()}",
+                    subtitle = "${it.quantity} ${state.unit.toShortString()}",
                     onClick = { onSendEvent(SettingsContract.Event.SelectContainer(it.id)) }
                 )
                 Divider()

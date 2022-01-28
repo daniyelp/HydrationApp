@@ -1,6 +1,7 @@
 package com.daniyelp.hydrationapp.data.model
 
-data class Container(val id: Int, val quantityInMilliliters: Int) {
+//quantity.get(Milliliters); quantity.set(Milliliters)
+data class Container(val id: Int, val quantity: Int) {
     companion object {
         private val containers = listOf(
             Container(1, 200),

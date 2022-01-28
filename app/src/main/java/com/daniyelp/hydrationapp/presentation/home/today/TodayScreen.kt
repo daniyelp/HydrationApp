@@ -100,7 +100,7 @@ fun TodayScreen(
                         Button(
                             onClick = { onSendEvent(TodayContract.Event.SelectContainer(container.id))}
                         ) {
-                            Text(text = container.quantityInMilliliters.toString().plus(" ml"))
+                            Text(text = container.quantity.toString().plus(" ml"))
                         }
                     }
                 }

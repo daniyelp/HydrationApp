@@ -1,11 +1,18 @@
 package com.daniyelp.hydrationapp.presentation.settings
 
+import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SettingsViewModel
-    : BaseViewModel<SettingsContract.Event, SettingsContract.State, SettingsContract.Effect>() {
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    private val preferencesRepository: PreferencesRepository,
+): BaseViewModel<SettingsContract.Event, SettingsContract.State, SettingsContract.Effect>() {
+
     override fun setInitialState(): SettingsContract.State {
         return SettingsContract.State(
            QuantityUnit.Milliliter,
@@ -23,6 +30,12 @@ class SettingsViewModel
         }
     }
 
+    init {
+        preferencesRepository.readPreferredUnit(viewModelScope) {
+            setState { viewState.value.copy(unit = it) }
+        }
+    }
+
     private fun selectDailyGoal() {
         setEffect { SettingsContract.Effect.Navigation.ToDailyGoal }
     }
@@ -32,7 +45,7 @@ class SettingsViewModel
     }
 
     private fun selectUnit(unit: QuantityUnit) {
-        setState { viewState.value.copy(unit = unit) }
+        preferencesRepository.editPreferredUnit(viewModelScope, unit)
     }
 
     private fun navigateUp() {

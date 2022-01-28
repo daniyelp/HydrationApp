@@ -5,6 +5,7 @@ buildscript {
         hiltNavigationComposeVersion = '1.0.0-rc01'
         hiltVersion = '2.38.1'
         coilComposeVersion = '1.4.0'
+        datastoreVersion = "1.0.0"
     }
     repositories {
         google()

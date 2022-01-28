@@ -23,7 +23,7 @@ class TodayViewModel
     }
 
     private fun selectContainer(containerId: Int) {
-        val quantityAdded = Container.getContainer(containerId).quantityInMilliliters
+        val quantityAdded = Container.getContainer(containerId).quantity
         setState { viewState.value.copy(currentQuantity = currentQuantity + quantityAdded) }
     }
 
