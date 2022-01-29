@@ -14,5 +14,7 @@ object AppDestinations {
     }
     object Settings: Screen("settings")
     object DailyGoal: Screen("dailygoal")
-    object Container: Screen("container")
+    object Container: Screen("container/{containerId}") {
+        fun createRoute(containerId: Int) = "container/$containerId"
+    }
 }

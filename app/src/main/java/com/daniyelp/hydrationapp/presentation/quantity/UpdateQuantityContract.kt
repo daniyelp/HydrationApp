@@ -6,7 +6,7 @@ import com.daniyelp.hydrationapp.ViewSideEffect
 import com.daniyelp.hydrationapp.ViewState
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 
-class QuantityContract {
+class UpdateQuantityContract {
     sealed class Event : ViewEvent {
         data class SetQuantity(val quantityInput: TextFieldValue): Event()
         object Cancel: Event()

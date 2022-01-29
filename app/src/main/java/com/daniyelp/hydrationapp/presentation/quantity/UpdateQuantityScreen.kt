@@ -20,13 +20,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun QuantityScreen(
+fun UpdateQuantityScreen(
     title: String,
     description: String,
-    state: QuantityContract.State,
-    onSendEvent: (QuantityContract.Event) -> Unit,
-    effects: Flow<QuantityContract.Effect>,
-    onNavigationRequest: (QuantityContract.Effect.Navigation) -> Unit
+    state: UpdateQuantityContract.State,
+    onSendEvent: (UpdateQuantityContract.Event) -> Unit,
+    effects: Flow<UpdateQuantityContract.Effect>,
+    onNavigationRequest: (UpdateQuantityContract.Effect.Navigation) -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     Scaffold(
@@ -36,12 +36,12 @@ fun QuantityScreen(
                     Text(text = title)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onSendEvent(QuantityContract.Event.Cancel )}) {
+                    IconButton(onClick = { onSendEvent(UpdateQuantityContract.Event.Cancel )}) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onSendEvent(QuantityContract.Event.Save) }) {
+                    IconButton(onClick = { onSendEvent(UpdateQuantityContract.Event.Save) }) {
                         Icon(imageVector = Icons.Default.Save, contentDescription = null)
                     }
                 }
@@ -51,7 +51,7 @@ fun QuantityScreen(
         LaunchedEffect(effects) {
             effects.onEach { effect ->
                 when (effect) {
-                    is QuantityContract.Effect.Navigation -> {
+                    is UpdateQuantityContract.Effect.Navigation -> {
                         onNavigationRequest(effect)
                     }
                 }
@@ -73,7 +73,7 @@ fun QuantityScreen(
                 OutlinedTextField(
                     modifier = Modifier.widthIn(min = 96.dp),
                     value = state.quantityInput,
-                    onValueChange = { textFieldValue -> onSendEvent(QuantityContract.Event.SetQuantity(textFieldValue)) },
+                    onValueChange = { textFieldValue -> onSendEvent(UpdateQuantityContract.Event.SetQuantity(textFieldValue)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done

@@ -34,6 +34,9 @@ class SettingsViewModel @Inject constructor(
         preferencesRepository.readPreferredUnit(viewModelScope) {
             setState { viewState.value.copy(unit = it) }
         }
+        preferencesRepository.readDailyGoal(viewModelScope) {
+            setState { viewState.value.copy(dailyGoal = it) }
+        }
     }
 
     private fun selectDailyGoal() {

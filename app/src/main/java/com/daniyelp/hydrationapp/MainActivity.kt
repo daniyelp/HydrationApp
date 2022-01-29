@@ -5,23 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.daniyelp.hydrationapp.presentation.home.homeNavGraph
 import com.daniyelp.hydrationapp.navigation.AppDestinations
-import com.daniyelp.hydrationapp.presentation.quantity.QuantityContract
-import com.daniyelp.hydrationapp.presentation.quantity.QuantityScreen
-import com.daniyelp.hydrationapp.presentation.quantity.QuantityViewModel
+import com.daniyelp.hydrationapp.presentation.quantity.*
 import com.daniyelp.hydrationapp.presentation.settings.SettingsContract
 import com.daniyelp.hydrationapp.presentation.settings.SettingsScreen
 import com.daniyelp.hydrationapp.presentation.settings.SettingsViewModel
 import com.daniyelp.hydrationapp.presentation.theme.HydrationAppTheme
-import com.daniyelp.hydrationapp.presentation.units.UnitsContract
-import com.daniyelp.hydrationapp.presentation.units.UnitsScreen
-import com.daniyelp.hydrationapp.presentation.units.UnitsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,8 +38,14 @@ class MainActivity : ComponentActivity() {
                     composable(AppDestinations.DailyGoal.route) {
                         DailyGoalScreenDestination(navController)
                     }
-                    composable(AppDestinations.Container.route) {
-                        ContainerScreenDestination(navController)
+                    composable(
+                        route = AppDestinations.Container.route,
+                        arguments = listOf(
+                            navArgument(name = "containerId") { type = NavType.IntType }
+                        )
+                    ) { backStackEntry ->
+                        val containerId = backStackEntry.arguments?.getInt("containerId")!!
+                        ContainerScreenDestination(containerId, navController)
                     }
                 }
             }
@@ -67,7 +69,7 @@ private fun SettingsScreenDestination(navController: NavController) {
                     navController.navigate(AppDestinations.DailyGoal.route)
                 }
                 is SettingsContract.Effect.Navigation.ToContainer -> {
-                    navController.navigate(AppDestinations.Container.route)
+                    navController.navigate(AppDestinations.Container.createRoute(navEffect.containerId))
                 }
             }
         }
@@ -76,16 +78,16 @@ private fun SettingsScreenDestination(navController: NavController) {
 
 @Composable
 private fun DailyGoalScreenDestination(navController: NavController) {
-    val quantityViewModel = hiltViewModel<QuantityViewModel>()
-    QuantityScreen(
+    val updateDailyGoalViewModel = hiltViewModel<UpdateDailyGoalViewModel>()
+    UpdateQuantityScreen(
         title = "Daily Goal",
         description = "Here you can set your hydration goal based on your preferred unit of measurement",
-        state = quantityViewModel.viewState.value,
-        onSendEvent = quantityViewModel::setEvent,
-        effects = quantityViewModel.effect,
+        state = updateDailyGoalViewModel.viewState.value,
+        onSendEvent = updateDailyGoalViewModel::setEvent,
+        effects = updateDailyGoalViewModel.effect,
         onNavigationRequest = { navEffect ->
             when (navEffect) {
-                QuantityContract.Effect.Navigation.Up -> {
+                UpdateQuantityContract.Effect.Navigation.Up -> {
                     navController.popBackStack()
                 }
             }
@@ -94,17 +96,17 @@ private fun DailyGoalScreenDestination(navController: NavController) {
 }
 
 @Composable
-private fun ContainerScreenDestination(navController: NavController) {
-    val quantityViewModel = hiltViewModel<QuantityViewModel>()
-    QuantityScreen(
-        title = "Container x",
+private fun ContainerScreenDestination(containerId: Int, navController: NavController) {
+    val updateContainerQuantityViewModel = hiltViewModel<UpdateContainerQuantityViewModel>()
+    UpdateQuantityScreen(
+        title = "Container $containerId",
         description = "Here you can specify your container size so it would be easier for you to enter your daily liquid intake",
-        state = quantityViewModel.viewState.value,
-        onSendEvent = quantityViewModel::setEvent,
-        effects = quantityViewModel.effect,
+        state = updateContainerQuantityViewModel.viewState.value,
+        onSendEvent = updateContainerQuantityViewModel::setEvent,
+        effects = updateContainerQuantityViewModel.effect,
         onNavigationRequest = { navEffect ->
             when (navEffect) {
-                QuantityContract.Effect.Navigation.Up -> {
+                UpdateQuantityContract.Effect.Navigation.Up -> {
                     navController.popBackStack()
                 }
             }
