@@ -1,5 +1,6 @@
 package com.daniyelp.hydrationapp.presentation.quantity
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.data.model.Quantity
@@ -21,7 +22,10 @@ class UpdateDailyGoalViewModel @Inject constructor(
                 }
             }
             readDailyGoal(viewModelScope) { quantity ->
-                setState { copy(quantityInput = TextFieldValue(quantity.getValue(unit).toString())) }
+                val quantityString = quantity.getValue(viewState.value.unit).toString()
+                setState {
+                    copy(quantityInput = TextFieldValue(quantityString, TextRange(quantityString.length)))
+                }
             }
         }
     }

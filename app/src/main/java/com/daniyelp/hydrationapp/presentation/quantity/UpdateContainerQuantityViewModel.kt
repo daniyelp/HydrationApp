@@ -1,5 +1,6 @@
 package com.daniyelp.hydrationapp.presentation.quantity
 
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -25,7 +26,10 @@ class UpdateContainerQuantityViewModel @Inject constructor(
                 }
             }
             readContainerQuantity(containerId, viewModelScope) { quantity ->
-                setState { copy(quantityInput = TextFieldValue(quantity.getValue(unit).toString())) }
+                val quantityString = quantity.getValue(viewState.value.unit).toString()
+                setState {
+                    copy(quantityInput = TextFieldValue(quantityString, TextRange(quantityString.length)))
+                }
             }
         }
     }
