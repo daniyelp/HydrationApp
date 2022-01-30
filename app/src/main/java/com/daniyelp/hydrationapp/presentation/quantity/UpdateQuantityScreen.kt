@@ -83,7 +83,6 @@ fun UpdateQuantityScreen(
                 text = description,
                 textAlign = TextAlign.Center
             )
-            val density = LocalDensity.current
             Column(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally

@@ -115,7 +115,6 @@ fun SettingsSimpleItem(
 
 @Composable
 fun SettingsOptionsItem(
-    modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
     items: List<String>,
