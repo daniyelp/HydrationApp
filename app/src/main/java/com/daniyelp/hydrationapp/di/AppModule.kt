@@ -1,7 +1,9 @@
 package com.daniyelp.hydrationapp.di
 
 import android.content.Context
-import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
+import com.daniyelp.hydrationapp.data.repository.impl.FakeDayProgressRepository
+import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,4 +17,8 @@ object AppModule {
     @Provides
     @Singleton
     fun providePreferencesRepository(@ApplicationContext context: Context) = PreferencesRepository(context)
+
+    @Provides
+    @Singleton
+    fun provideDayProgressRepository(): DayProgressRepository = FakeDayProgressRepository()
 }

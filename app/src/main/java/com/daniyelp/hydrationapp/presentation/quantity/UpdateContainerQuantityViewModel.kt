@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
-import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

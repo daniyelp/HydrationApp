@@ -6,7 +6,7 @@ import com.daniyelp.hydrationapp.data.model.Container
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 import com.daniyelp.hydrationapp.data.model.plus
-import com.daniyelp.hydrationapp.data.repository.PreferencesRepository
+import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

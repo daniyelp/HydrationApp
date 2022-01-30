@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp.data.repository
+package com.daniyelp.hydrationapp.data.repository.impl
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -98,5 +98,6 @@ class PreferencesRepository(context: Context) {
         containerId: Int,
         scope: CoroutineScope,
         newContainerQuantity: Quantity
-    ) = editPreference(scope, PreferencesObject.containerPreferencesObject(containerId), newContainerQuantity.getValue(QuantityUnit.Milliliter))
+    ) = editPreference(scope,
+        PreferencesObject.containerPreferencesObject(containerId), newContainerQuantity.getValue(QuantityUnit.Milliliter))
 }

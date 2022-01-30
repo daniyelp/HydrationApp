@@ -18,6 +18,7 @@ import com.daniyelp.hydrationapp.presentation.home.today.TodayContract
 import com.daniyelp.hydrationapp.presentation.home.today.TodayScreen
 import com.daniyelp.hydrationapp.presentation.home.today.TodayViewModel
 import com.daniyelp.hydrationapp.navigation.AppDestinations
+import com.daniyelp.hydrationapp.presentation.home.history.HistoryViewModel
 import soup.compose.material.motion.*
 
 @ExperimentalAnimationApi
@@ -98,8 +99,9 @@ fun NavGraphBuilder.homeNavGraph(navController: NavController) {
                 materialSharedAxisXOut(forward = false)
             },
         ) {
+            val historyViewModel = hiltViewModel<HistoryViewModel>()
             HomeScreen(navController) {
-                HistoryScreen()
+                HistoryScreen(state = historyViewModel.viewState.value)
             }
         }
     }

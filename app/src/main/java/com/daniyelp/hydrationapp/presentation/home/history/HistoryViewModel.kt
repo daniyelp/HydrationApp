@@ -1,12 +1,36 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
+import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.BaseViewModel
+import com.daniyelp.hydrationapp.data.model.DayProgress
+import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
+import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HistoryViewModel
-    : BaseViewModel<HistoryContract.Event, HistoryContract.State, HistoryContract.Effect>() {
+@HiltViewModel
+class HistoryViewModel @Inject constructor(
+    private val dayProgressRepository: DayProgressRepository,
+    private val preferencesRepository: PreferencesRepository,
+): BaseViewModel<HistoryContract.Event, HistoryContract.State, HistoryContract.Effect>() {
     override fun setInitialState(): HistoryContract.State {
-        return HistoryContract.State()
+        return HistoryContract.State(
+            unit = QuantityUnit.Milliliter,
+            dayProgressList = emptyList()
+        )
     }
 
     override fun handleEvents(event: HistoryContract.Event) {}
+
+    init {
+        viewModelScope.launch {
+            val dayProgressList = dayProgressRepository.all()
+            setState { copy(dayProgressList = dayProgressList) }
+        }
+        preferencesRepository.readPreferredUnit(viewModelScope) {
+            setState { viewState.value.copy(unit = it) }
+        }
+    }
 }
