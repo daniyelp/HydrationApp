@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.daniyelp.hydrationapp.presentation.home.homeNavGraph
+import com.daniyelp.hydrationapp.presentation.home.homeComposable
 import com.daniyelp.hydrationapp.navigation.AppDestinations
 import com.daniyelp.hydrationapp.presentation.quantity.*
 import com.daniyelp.hydrationapp.presentation.settings.SettingsContract
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = AppDestinations.Home.route
                 ) {
-                    homeNavGraph(navController)
+                    homeComposable(navController)
                     composable(
                         route = AppDestinations.Settings.route,
                         enterMotionSpec = { initial, _ ->
