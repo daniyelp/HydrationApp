@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -35,6 +36,9 @@ class SettingsViewModel @Inject constructor(
         }
         preferencesRepository.readDailyGoal(viewModelScope) {
             setState { viewState.value.copy(dailyGoal = it) }
+        }
+        preferencesRepository.readContainers(viewModelScope) {
+            setState { viewState.value.copy(containers = it)}
         }
     }
 

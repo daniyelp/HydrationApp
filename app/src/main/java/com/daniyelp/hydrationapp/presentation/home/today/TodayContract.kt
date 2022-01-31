@@ -17,7 +17,7 @@ class TodayContract {
         val unit: QuantityUnit,
         val dailyGoal: Quantity,
         val currentQuantity: Quantity,
-        val containers: List<Container> = Container.getContainers()
+        val containers: List<Container> = emptyList()
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

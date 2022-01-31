@@ -16,12 +16,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+private val containers = listOf(
+    Container(1, Quantity(200, QuantityUnit.Milliliter)),
+    Container(2, Quantity(400, QuantityUnit.Milliliter)),
+    Container(3, Quantity(500, QuantityUnit.Milliliter)),
+)
+fun getContainer(id: Int) = containers.single { it.id == id}
+
 private open class PreferencesObject<T>(val key: Preferences.Key<T>, val defaultValue: T) {
     object Unit: PreferencesObject<String>(stringPreferencesKey("UNIT"), QuantityUnit.Milliliter.toString())
     object DailyGoal: PreferencesObject<Int>(intPreferencesKey("DAILY_GOAL"), 2000)
     companion object {
         fun containerPreferencesObject(containerId: Int) =
-            PreferencesObject<Int>(intPreferencesKey("CONTAINER_${containerId}"), Container.getContainer(containerId).quantity.getValue(QuantityUnit.Milliliter))
+            PreferencesObject<Int>(intPreferencesKey("CONTAINER_${containerId}"), getContainer(containerId).quantity.getValue(QuantityUnit.Milliliter))
     }
 }
 
@@ -93,6 +100,20 @@ class PreferencesRepository(context: Context) {
             onContainerQuantityUpdated(Quantity(it, QuantityUnit.Milliliter))
         }
     )
+
+    fun readContainers(
+        scope: CoroutineScope,
+        onContainersUpdated: (List<Container>) -> Unit
+    ) {
+        var storeContainers = containers
+        containers.forEach { container ->
+            readContainerQuantity(container.id, scope) { storeQuantity ->
+                val storeContainer = container.copy(quantity = storeQuantity)
+                storeContainers = storeContainers.map { if(it.id == container.id) storeContainer  else it }
+                onContainersUpdated(storeContainers)
+            }
+        }
+    }
 
     fun editContainerQuantity(
         containerId: Int,

@@ -25,7 +25,7 @@ class HistoryViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val dayProgressList = dayProgressRepository.all()
+            val dayProgressList = dayProgressRepository.all(30)
             setState { copy(dayProgressList = dayProgressList) }
         }
         preferencesRepository.readPreferredUnit(viewModelScope) {

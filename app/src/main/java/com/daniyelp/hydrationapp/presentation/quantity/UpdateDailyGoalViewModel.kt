@@ -5,12 +5,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
+import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateDailyGoalViewModel @Inject constructor(
+    private val dayProgressRepository: DayProgressRepository,
     private val preferencesRepository: PreferencesRepository
 ): UpdateQuantityViewModel() {
 
@@ -38,6 +42,7 @@ class UpdateDailyGoalViewModel @Inject constructor(
     }
 
     override fun saveQuantity(quantity: Quantity) {
-        preferencesRepository.editDailyGoal(viewModelScope, quantity)
+        preferencesRepository.editDailyGoal(GlobalScope, quantity)
+        GlobalScope.launch { dayProgressRepository.updateTodayGoal(quantity) }
     }
 }

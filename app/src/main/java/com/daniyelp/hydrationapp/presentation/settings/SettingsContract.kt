@@ -18,7 +18,7 @@ class SettingsContract {
     data class State(
         val unit: QuantityUnit,
         val dailyGoal: Quantity,
-        val containers: List<Container> = Container.getContainers()
+        val containers: List<Container> = emptyList()
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
