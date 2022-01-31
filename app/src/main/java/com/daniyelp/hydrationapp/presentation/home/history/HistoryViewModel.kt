@@ -1,8 +1,7 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
 import androidx.lifecycle.viewModelScope
-import com.daniyelp.hydrationapp.BaseViewModel
-import com.daniyelp.hydrationapp.data.model.DayProgress
+import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -132,7 +133,7 @@ private fun HomeBottomBar(
     BottomNavigation {
         items.forEach { item ->
             BottomNavigationItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = item.title) },
+                icon = { Icon(painter = painterResource(item.iconId), contentDescription = item.title) },
                 label = { Text(text = item.title) },
                 alwaysShowLabel = true,
                 selected = navController.currentBackStackEntry?.destination?.route == item.route,

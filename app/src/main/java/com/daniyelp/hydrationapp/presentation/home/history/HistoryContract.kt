@@ -1,8 +1,8 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
-import com.daniyelp.hydrationapp.ViewEvent
-import com.daniyelp.hydrationapp.ViewSideEffect
-import com.daniyelp.hydrationapp.ViewState
+import com.daniyelp.hydrationapp.presentation.ViewEvent
+import com.daniyelp.hydrationapp.presentation.ViewSideEffect
+import com.daniyelp.hydrationapp.presentation.ViewState
 import com.daniyelp.hydrationapp.data.model.DayProgress
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 

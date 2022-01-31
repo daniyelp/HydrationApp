@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp
+package com.daniyelp.hydrationapp.presentation
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

@@ -16,7 +16,7 @@ fun BackgroundImage(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Image(
             modifier = modifier,
-            painter = rememberImagePainter(R.drawable.leaf_background),
+            painter = rememberImagePainter(R.drawable.background_leaf),
             contentScale = ContentScale.Crop,
             contentDescription = null
         )

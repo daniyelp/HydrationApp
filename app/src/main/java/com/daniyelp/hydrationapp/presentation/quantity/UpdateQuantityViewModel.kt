@@ -1,7 +1,7 @@
 package com.daniyelp.hydrationapp.presentation.quantity
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.daniyelp.hydrationapp.BaseViewModel
+import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Quantity
 
 abstract class UpdateQuantityViewModel: BaseViewModel<UpdateQuantityContract.Event, UpdateQuantityContract.State, UpdateQuantityContract.Effect>() {

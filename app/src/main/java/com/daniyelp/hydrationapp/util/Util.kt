@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp
+package com.daniyelp.hydrationapp.util
 
 import java.text.SimpleDateFormat
 import java.util.*

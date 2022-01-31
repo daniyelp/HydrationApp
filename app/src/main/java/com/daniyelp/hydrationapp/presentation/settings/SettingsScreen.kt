@@ -172,8 +172,9 @@ fun SingleChoiceItemsDialog(
                                         onClose()
                                     }
                                 )
-                                .padding(horizontal = 32.dp),
-                            horizontalArrangement = Arrangement.spacedBy(32.dp),
+                                //the radio button has some weird padding too
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(

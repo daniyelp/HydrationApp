@@ -19,7 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.daniyelp.hydrationapp.data.model.DayProgress
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
-import com.daniyelp.hydrationapp.dateToString
+import com.daniyelp.hydrationapp.util.dateToString
 
 @Composable
 fun DayProgressCard(

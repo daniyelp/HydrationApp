@@ -55,8 +55,11 @@ fun UpdateQuantityScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onSendEvent(UpdateQuantityContract.Event.Save) }) {
-                        Icon(imageVector = Icons.Default.Save, contentDescription = null)
+                    TextButton(onClick = { onSendEvent(UpdateQuantityContract.Event.Save) }) {
+                        Text(
+                            text = "SAVE",
+                            color = MaterialTheme.colors.onBackground.copy(alpha = LocalContentAlpha.current)
+                        )
                     }
                 }
             )

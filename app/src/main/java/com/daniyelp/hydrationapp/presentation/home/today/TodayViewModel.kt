@@ -1,7 +1,7 @@
 package com.daniyelp.hydrationapp.presentation.home.today
 
 import androidx.lifecycle.viewModelScope
-import com.daniyelp.hydrationapp.BaseViewModel
+import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Container
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit

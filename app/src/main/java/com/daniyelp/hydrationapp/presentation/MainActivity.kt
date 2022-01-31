@@ -1,4 +1,4 @@
-package com.daniyelp.hydrationapp
+package com.daniyelp.hydrationapp.presentation
 
 import android.os.Bundle
 import android.view.WindowManager
