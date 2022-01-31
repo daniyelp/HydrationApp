@@ -58,10 +58,11 @@ fun UpdateQuantityScreen(
                     TextButton(onClick = { onSendEvent(UpdateQuantityContract.Event.Save) }) {
                         Text(
                             text = "SAVE",
-                            color = MaterialTheme.colors.onBackground.copy(alpha = LocalContentAlpha.current)
+                            color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.high)
                         )
                     }
-                }
+                },
+                elevation = 0.dp
             )
         }
     ) {

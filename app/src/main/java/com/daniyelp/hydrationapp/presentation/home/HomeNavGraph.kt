@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -103,14 +104,19 @@ private fun BottomBar(
         AppDestinations.Home.History
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    BottomNavigation {
+    BottomNavigation(elevation = 0.dp) {
         items.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(painter = painterResource(item.iconId), contentDescription = item.title) },
                 label = { Text(text = item.title) },
                 alwaysShowLabel = true,
+                selectedContentColor = MaterialTheme.colors.primary,
+                unselectedContentColor = MaterialTheme.colors.onBackground,
                 selected = navBackStackEntry?.destination?.route == item.route,
-                onClick = { navController.navigate(item.route) }
+                onClick = {
+                    if(navBackStackEntry?.destination?.route != item.route)
+                        navController.navigate(item.route)
+                },
             )
         }
     }

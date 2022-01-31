@@ -33,7 +33,8 @@ fun SettingsScreen(
                     IconButton(onClick = { onSendEvent(SettingsContract.Event.NavigateUp) }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
                     }
-                }
+                },
+                elevation = 0.dp
             )
         }
     ) {

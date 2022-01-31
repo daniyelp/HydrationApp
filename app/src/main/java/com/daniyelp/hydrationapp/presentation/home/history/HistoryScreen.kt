@@ -1,5 +1,6 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,11 +21,12 @@ fun HistoryScreen(state: HistoryContract.State) {
             TopAppBar(
                 title = {
                     Text(text = "History")
-                }
+                },
+                elevation = 0.dp
             )
         }
     ) {
-        LazyColumn {
+        LazyColumn() {
             item {
                 Text(
                     modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp),
@@ -43,7 +45,7 @@ fun HistoryScreen(state: HistoryContract.State) {
                         BarData(
                             reached = it.quantity.getValue(state.unit),
                             goal = it.goal.getValue(state.unit),
-                            text = dateToString(it.date, "dd.mm")
+                            text = dateToString(it.date, "dd.MM")
                         )
                     }
                 )

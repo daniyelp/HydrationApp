@@ -48,9 +48,14 @@ fun TodayScreen(
                 },
                 actions = {
                     IconButton(onClick = { onSendEvent(TodayContract.Event.NavigateToSettings) }) {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = null)
+                        Icon(
+                            imageVector  = Icons.Default.Settings,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.high)
+                        )
                     }
-                }
+                },
+                elevation = 0.dp
             )
         }
     ) {
@@ -73,7 +78,8 @@ fun TodayScreen(
                 Text(
                     text = "${currentQuantityValue * 100 / if (dailyGoalValue != 0) dailyGoalValue else 1}%",
                     fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.h3.fontSize
+                    fontSize = MaterialTheme.typography.h3.fontSize,
+                    color = MaterialTheme.colors.primary
                 )
                 Text(
                     text = "of $dailyGoalValue ${state.unit.toShortString()} Goal"
