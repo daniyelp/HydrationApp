@@ -10,10 +10,12 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
@@ -21,7 +23,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import coil.transform.BlurTransformation
 import com.daniyelp.hydrationapp.R
+import com.daniyelp.hydrationapp.presentation.common.BackgroundImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.collect
@@ -60,28 +64,14 @@ fun TodayScreen(
             }.collect()
         }
         Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = rememberImagePainter(R.drawable.leaf_background),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
-            )
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(Color.Transparent, Color.Black)
-                        )
-                    )
-            )
+            BackgroundImage(modifier = Modifier.fillMaxSize())
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "${currentQuantityValue * 100 / if(dailyGoalValue != 0) dailyGoalValue else 1}%",
+                    text = "${currentQuantityValue * 100 / if (dailyGoalValue != 0) dailyGoalValue else 1}%",
                     fontWeight = FontWeight.Bold,
                     fontSize = MaterialTheme.typography.h3.fontSize
                 )
@@ -90,14 +80,27 @@ fun TodayScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val fillRatio by derivedStateOf {
-                    (currentQuantityValue / if(dailyGoalValue != 0) dailyGoalValue.toFloat() else 1f).coerceIn(0f, 1f)
+                    (currentQuantityValue / if (dailyGoalValue != 0) dailyGoalValue.toFloat() else 1f).coerceIn(
+                        0f,
+                        1f
+                    )
                 }
-                Glass(topWidth = screenWidth / 2, fillRatio = fillRatio, quantity = "$currentQuantityValue ${state.unit.toShortString()}")
+                Glass(
+                    topWidth = screenWidth / 2,
+                    fillRatio = fillRatio,
+                    quantity = "$currentQuantityValue ${state.unit.toShortString()}"
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     state.containers.forEach { container ->
                         Button(
-                            onClick = { onSendEvent(TodayContract.Event.SelectContainer(container.id))}
+                            onClick = {
+                                onSendEvent(
+                                    TodayContract.Event.SelectContainer(
+                                        container.id
+                                    )
+                                )
+                            }
                         ) {
                             Text(text = "${container.quantity.getValue(state.unit)} ${state.unit.toShortString()}")
                         }

@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.daniyelp.hydrationapp.presentation.common.BackgroundImage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -74,7 +75,8 @@ fun UpdateQuantityScreen(
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize()) {
+            BackgroundImage(Modifier.fillMaxSize())
             Text(
                 modifier = Modifier
                     .widthIn(max = screenWidth * 3 / 4)
@@ -110,12 +112,6 @@ fun UpdateQuantityScreen(
                         textAlign = TextAlign.Center
                     ),
                     singleLine = true,
-                    /*onTextLayout = { textLayoutResult ->
-                        val theDp = with(density) {
-                            println(textLayoutResult.size.width.toDp())
-
-                        }
-                    },*/
                     cursorBrush = Brush.verticalGradient(
                         0.00f to Color.Transparent,
                         0.20f to Color.Transparent,
