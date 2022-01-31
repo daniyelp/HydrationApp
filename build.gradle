@@ -5,7 +5,6 @@ buildscript {
         kotlinVersion = '1.6.10'
         hiltNavigationComposeVersion = '1.0.0-rc01'
         hiltVersion = '2.38.1'
-        coilComposeVersion = '1.4.0'
         datastoreVersion = "1.0.0"
         navigationComposeVersion = '2.5.0-alpha01'
         accompanistVersion = '0.24.1-alpha'

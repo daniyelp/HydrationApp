@@ -9,7 +9,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -26,7 +25,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.daniyelp.hydrationapp.presentation.common.BackgroundImage
+import com.daniyelp.hydrationapp.presentation.common.Leaves
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -79,8 +78,7 @@ fun UpdateQuantityScreen(
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
-        Box(Modifier.fillMaxSize()) {
-            BackgroundImage(Modifier.fillMaxSize())
+        Leaves(Modifier.fillMaxSize()) {
             Text(
                 modifier = Modifier
                     .widthIn(max = screenWidth * 3 / 4)
