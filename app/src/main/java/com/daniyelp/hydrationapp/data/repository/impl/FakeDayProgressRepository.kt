@@ -1,5 +1,8 @@
 package com.daniyelp.hydrationapp.data.repository.impl
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.daniyelp.hydrationapp.data.model.DayProgress
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
@@ -20,25 +23,27 @@ fun generateFakeDayProgressList(n: Int) =
     }
 
 class FakeDayProgressRepository: DayProgressRepository {
-    private val dayProgressList = generateFakeDayProgressList(40).toMutableList().apply {
-        add(0, first().copy(quantity = Quantity(0, QuantityUnit.Milliliter)))
-    }
+    private val _dayProgressList = MutableLiveData(
+        generateFakeDayProgressList(40).toMutableList().apply {
+            add(0, first().copy(quantity = Quantity(0, QuantityUnit.Milliliter)))
+        }.toList()
+    )
 
-    override suspend fun all(n: Int): List<DayProgress> {
-        return dayProgressList.take(n)
-    }
+    override fun all(n: Int): LiveData<List<DayProgress>> =
+        Transformations.map(_dayProgressList) { list -> list.take(n) }
 
-    override suspend fun getTodayProgress(): DayProgress{
-        println("quantity is ${dayProgressList[0].goal.getValue(QuantityUnit.Milliliter)}")
-        return dayProgressList[0]
-    }
+
+    override fun getTodayProgress(): LiveData<DayProgress> =
+        Transformations.map(_dayProgressList) { list -> list[0] }
 
     override suspend fun updateTodayProgress(newProgress: DayProgress) {
-        dayProgressList[0] = newProgress
+        _dayProgressList.postValue(_dayProgressList.value?.toMutableList()?.apply { set(0, newProgress) }?.toList())
     }
 
     override suspend fun updateTodayGoal(newGoal: Quantity) {
-        dayProgressList[0] = dayProgressList[0].copy(goal = newGoal)
-        println("new goal is ${newGoal.getValue(QuantityUnit.Milliliter)}")
+        _dayProgressList.value?.let { dayProgressList ->
+            val newTodayProgress = dayProgressList[0].copy(goal = newGoal)
+            updateTodayProgress(newTodayProgress)
+        }
     }
 }

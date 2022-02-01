@@ -24,9 +24,8 @@ class HistoryViewModel @Inject constructor(
     override fun handleEvents(event: HistoryContract.Event) {}
 
     init {
-        viewModelScope.launch {
-            val dayProgressList = dayProgressRepository.all(30)
-            setState { copy(dayProgressList = dayProgressList) }
+        dayProgressRepository.all(30).observeForever {
+            setState { copy(dayProgressList = it) }
         }
         preferencesRepository.readPreferredUnit(viewModelScope) {
             setState { viewState.value.copy(unit = it) }

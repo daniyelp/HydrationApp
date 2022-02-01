@@ -21,7 +21,7 @@ private val containers = listOf(
     Container(2, Quantity(400, QuantityUnit.Milliliter)),
     Container(3, Quantity(500, QuantityUnit.Milliliter)),
 )
-fun getContainer(id: Int) = containers.single { it.id == id}
+private fun getContainer(id: Int) = containers.single { it.id == id}
 
 private open class PreferencesObject<T>(val key: Preferences.Key<T>, val defaultValue: T) {
     object Unit: PreferencesObject<String>(stringPreferencesKey("UNIT"), QuantityUnit.Milliliter.toString())
