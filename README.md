@@ -18,7 +18,7 @@ https://user-images.githubusercontent.com/84658876/151904578-1967ada9-649f-45f8-
 #### Daily goal / Container screen
 - The text field doesn't scale with the input's width
 - The text field doesn't have input validation
-- The enter and exit transitions are somehow sketchy because of the keyboard's revealing/hiding.
+- The enter and exit transitions are somehow sketchy because of the keyboard's revealing/hiding
 #### Preferences
 - Some portion is lost in the convertion between milliliters and ounces. This causes inconsistency in the app (e.g. when having milliliters selected, the today screen may show 50%, but in the case we would have ounces selected, it would show 49%)
 #### Storage
