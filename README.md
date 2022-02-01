@@ -22,5 +22,5 @@ https://user-images.githubusercontent.com/84658876/151904578-1967ada9-649f-45f8-
 #### Preferences
 - Some portion is lost in the convertion between milliliters and ounces. This causes inconsistency in the app (e.g. when having milliliters selected, the today screen may show 50%, but in the case we would have ounces selected, it would show 49%)
 #### Storage
-- A fake repository implementation is used for the `DayProgressRepository` instead of an implementation with `Room`. The app behaves correctly durring the user's session, but its progress is lost once he leaves the app
+- A fake repository implementation is used for the `DayProgressRepository` instead of an implementation with `Room`. The app behaves correctly durring the user's session, but his progress is lost once he leaves the app
 
