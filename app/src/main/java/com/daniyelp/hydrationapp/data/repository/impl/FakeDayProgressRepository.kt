@@ -10,7 +10,7 @@ import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import java.util.*
 import kotlin.random.Random
 
-private const val millisecondsInADay = 86_400_000
+private const val millisecondsInADay: Long = 86_400_000
 
 fun generateFakeDayProgressList(n: Int) =
     (0 until n).map {

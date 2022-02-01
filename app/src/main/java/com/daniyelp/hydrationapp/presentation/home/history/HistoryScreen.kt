@@ -52,7 +52,7 @@ fun HistoryScreen(state: HistoryContract.State) {
                                 goal = it.goal.getValue(state.unit),
                                 text = dateToString(it.date, "dd.MM")
                             )
-                        }
+                        }.reversed()
                     )
                 }
                 itemsIndexed(state.dayProgressList) { index, dayProgress ->
