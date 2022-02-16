@@ -7,8 +7,13 @@ import com.daniyelp.hydrationapp.data.model.DayProgress
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
 import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.*
 import kotlin.random.Random
+import androidx.lifecycle.Observer
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 private const val millisecondsInADay: Long = 86_400_000
 
@@ -25,16 +30,16 @@ fun generateFakeDayProgressList(n: Int) =
 class FakeDayProgressRepository: DayProgressRepository {
     private val _dayProgressList = MutableLiveData(
         generateFakeDayProgressList(40).toMutableList().apply {
-            add(0, first().copy(quantity = Quantity(0, QuantityUnit.Milliliter)))
+            set(0, first().copy(quantity = Quantity(200, QuantityUnit.Milliliter)))
         }.toList()
     )
 
-    override fun all(n: Int): LiveData<List<DayProgress>> =
-        Transformations.map(_dayProgressList) { list -> list.take(n) }
+    override fun all(last: Int): Flow<List<DayProgress>> =
+        Transformations.map(_dayProgressList) { list -> list.take(last) }.asFlow()
 
 
-    override fun getTodayProgress(): LiveData<DayProgress> =
-        Transformations.map(_dayProgressList) { list -> list[0] }
+    override fun getTodayProgress(): Flow<DayProgress> =
+        Transformations.map(_dayProgressList) { list -> list[0] }.asFlow()
 
     override suspend fun updateTodayProgress(newProgress: DayProgress) {
         _dayProgressList.postValue(_dayProgressList.value?.toMutableList()?.apply { set(0, newProgress) }?.toList())
@@ -45,5 +50,16 @@ class FakeDayProgressRepository: DayProgressRepository {
             val newTodayProgress = dayProgressList[0].copy(goal = newGoal)
             updateTodayProgress(newTodayProgress)
         }
+    }
+}
+
+@ExperimentalCoroutinesApi
+fun <T> LiveData<T>.asFlow(): Flow<T> = callbackFlow {
+    val observer = Observer<T> { value ->
+        trySend(value)
+    }
+    observeForever(observer)
+    awaitClose {
+        removeObserver(observer)
     }
 }

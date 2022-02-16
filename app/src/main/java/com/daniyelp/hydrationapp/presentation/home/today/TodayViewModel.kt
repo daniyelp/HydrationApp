@@ -1,15 +1,12 @@
 package com.daniyelp.hydrationapp.presentation.home.today
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.daniyelp.hydrationapp.data.model.*
 import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,7 +31,8 @@ class TodayViewModel @Inject constructor(
         }
     }
 
-    private var todayProgress: LiveData<DayProgress> = dayProgressRepository.getTodayProgress()
+    private val todayProgressFlow: Flow<DayProgress> = dayProgressRepository.getTodayProgress()
+    private var todayProgress: DayProgress? = null
     init {
         preferencesRepository.readPreferredUnit(viewModelScope) {
             setState { viewState.value.copy(unit = it) }
@@ -42,21 +40,24 @@ class TodayViewModel @Inject constructor(
         preferencesRepository.readContainers(viewModelScope) {
             setState { viewState.value.copy(containers = it)}
         }
-        todayProgress.observeForever { todayProgress ->
+        todayProgressFlow.onEach { todayProgress ->
+            this.todayProgress = todayProgress
             setState {
                 copy(
                     dailyGoal = todayProgress.goal,
                     currentQuantity = todayProgress.quantity
                 )
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun selectContainer(containerId: Int) {
-        val quantityAdded = viewState.value.containers.first { it.id == containerId }.quantity
-        val newTodayProgress = with(todayProgress.value!!) { copy(quantity = quantity + quantityAdded) }
-        viewModelScope.launch {
-            dayProgressRepository.updateTodayProgress(newTodayProgress)
+        todayProgress?.let { todayProgress ->
+            val quantityAdded = viewState.value.containers.first { it.id == containerId }.quantity
+            val newTodayProgress = with(todayProgress) { copy(quantity = quantity + quantityAdded) }
+            viewModelScope.launch {
+                dayProgressRepository.updateTodayProgress(newTodayProgress)
+            }
         }
     }
 
