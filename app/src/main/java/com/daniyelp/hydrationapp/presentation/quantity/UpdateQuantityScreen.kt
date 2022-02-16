@@ -92,7 +92,7 @@ fun UpdateQuantityScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BasicTextField(
-                    modifier = Modifier.focusRequester(focusRequester),
+                    modifier = Modifier.focusRequester(focusRequester).width(IntrinsicSize.Min),
                     value = state.quantityInput,
                     onValueChange = { textFieldValue ->
                         onSendEvent(
@@ -111,7 +111,6 @@ fun UpdateQuantityScreen(
                     textStyle = LocalTextStyle.current.copy(
                         fontSize = with(LocalDensity.current) { 48.dp.toSp() },
                         color = MaterialTheme.colors.onBackground,
-                        textAlign = TextAlign.Center
                     ),
                     singleLine = true,
                     cursorBrush = Brush.verticalGradient(
@@ -125,15 +124,18 @@ fun UpdateQuantityScreen(
                     decorationBox = { innerTextField ->
                         Box(
                             modifier = Modifier
-                                .width(128.dp)
+                                .widthIn(min = 128.dp, max = screenWidth - 32.dp)
                                 .border(
                                     2.dp,
                                     MaterialTheme.colors.primary,
                                     RoundedCornerShape(8.dp)
                                 )
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            innerTextField()
+                            Box(modifier = Modifier.width(IntrinsicSize.Min)) {
+                                innerTextField()
+                            }
                         }
                     }
                 )
