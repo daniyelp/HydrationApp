@@ -1,5 +1,6 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
+import android.view.MotionEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
@@ -7,10 +8,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.RequestDisallowInterceptTouchEvent
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -18,6 +23,7 @@ import androidx.compose.ui.unit.dp
 
 data class BarData(val reached: Int, val goal: Int, val text: String)
 
+@ExperimentalComposeUiApi
 @Composable
 fun BarChart(
     barDataList: List<BarData>,
@@ -65,34 +71,29 @@ fun BarChart(
 
     @Composable
     fun VerticalBarsCanvas(modifier: Modifier = Modifier) {
-        Canvas(modifier) {
-            canvasHeightPx = size.height
-            canvasWidthPx = size.width
-            barWidthPx = canvasWidthPx / (barDataList.size * 2 - 1)
-            val horizontalLinesY =
-                horizontalLinesYFractional.map { fraction -> fraction * canvasHeightPx }
-            //draw the horizontal lines
-            horizontalLinesY.forEach { y ->
-                drawLine(
-                    color = solidColorDifference,
-                    start = Offset(0f, y),
-                    end = Offset(canvasWidthPx, y),
-                    strokeWidth = horizontalLineThickness.toPx(),
-                    alpha = alphaColorDifference
-                )
-            }
-            //draw the vertical bars
-            barDataList.forEachIndexed { index, barData ->
-                if (barData.reached < barData.goal) {
-                    val goalBarHeightPx = barData.goal.toFloat() / maxValue * canvasHeightPx
+        //var highlight by remember { mutableStateOf(false) }
+        data class Rect(
+            val color: Color,
+            val alpha: Float = 1f,
+            val topLeft: Offset,
+            val size: Size
+        )
+        fun DrawScope.drawRect(rect: Rect) {
+            drawRect(
+                color = rect.color,
+                alpha = rect.alpha,
+                topLeft = rect.topLeft,
+                size = rect.size
+            )
+        }
+        var progressVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
+        var progressVerticalBarsOriginal by remember { mutableStateOf(emptyList<Rect>()) }
+        var goalVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
+        LaunchedEffect(barDataList, canvasHeightPx) {
+            progressVerticalBars = barDataList.mapIndexed { index, barData ->
+                if(barData.reached < barData.goal) {
                     val reachedBarHeightPx = barData.reached.toFloat() / maxValue * canvasHeightPx
-                    drawRect(
-                        color = solidColorDifference,
-                        alpha = alphaColorDifference,
-                        topLeft = Offset(2 * barWidthPx * index, canvasHeightPx - goalBarHeightPx),
-                        size = Size(barWidthPx, goalBarHeightPx)
-                    )
-                    drawRect(
+                    Rect(
                         color = solidColorUncompleted,
                         topLeft = Offset(
                             2 * barWidthPx * index,
@@ -102,11 +103,81 @@ fun BarChart(
                     )
                 } else {
                     val barHeightPx = barData.reached.toFloat() / maxValue * canvasHeightPx
-                    drawRect(
+                    Rect(
                         color = solidColorCompleted,
                         topLeft = Offset(2 * barWidthPx * index, canvasHeightPx - barHeightPx),
                         size = Size(barWidthPx, barHeightPx)
                     )
+                }
+            }
+            progressVerticalBarsOriginal = progressVerticalBars.toList()
+
+            goalVerticalBars = barDataList.mapIndexed { index, barData ->
+                if (barData.reached < barData.goal) {
+                    val goalBarHeightPx = barData.goal.toFloat() / maxValue * canvasHeightPx
+                    Rect(
+                        color = solidColorDifference,
+                        alpha = alphaColorDifference,
+                        topLeft = Offset(
+                            2 * barWidthPx * index,
+                            canvasHeightPx - goalBarHeightPx
+                        ),
+                        size = Size(barWidthPx, goalBarHeightPx)
+                    )
+                } else {
+                    null
+                }
+            }.filterNotNull()
+        }
+        Box(modifier = modifier) {
+            val requestDisallowInterceptTouchEvent = remember { RequestDisallowInterceptTouchEvent() }
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInteropFilter(
+                        requestDisallowInterceptTouchEvent
+                    ) { event ->
+                        requestDisallowInterceptTouchEvent.invoke(true)
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN,
+                            MotionEvent.ACTION_MOVE -> {
+                                val x = event.x
+                                progressVerticalBars = progressVerticalBarsOriginal.map { rect ->
+                                    if(x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width) {
+                                        rect.copy(color = solidColorDifference)
+                                    } else {
+                                        rect
+                                    }
+                                }
+
+                                true
+                            }
+                            else -> {
+                                progressVerticalBars = progressVerticalBarsOriginal.toList()
+                                false
+                            }
+                        }
+                    }
+            ) {
+                canvasHeightPx = size.height
+                canvasWidthPx = size.width
+                barWidthPx = canvasWidthPx / (barDataList.size * 2 - 1)
+                val horizontalLinesY = horizontalLinesYFractional.map { fraction -> fraction * canvasHeightPx }
+                //draw the horizontal lines
+                horizontalLinesY.forEach { y ->
+                    drawLine(
+                        color = solidColorDifference,
+                        start = Offset(0f, y),
+                        end = Offset(canvasWidthPx, y),
+                        strokeWidth = horizontalLineThickness.toPx(),
+                        alpha = alphaColorDifference
+                    )
+                }
+                progressVerticalBars.forEach { rect ->
+                    drawRect(rect)
+                }
+                goalVerticalBars.forEach { rect ->
+                    drawRect(rect)
                 }
             }
         }
