@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.takeOrElse
 
 data class BarData(val reached: Int, val goal: Int, val text: String, val unit: String)
 
@@ -46,21 +45,7 @@ fun BarChart(
     val localDensity = LocalDensity.current
     fun spToDp(sp: TextUnit) = with(localDensity) { sp.toDp() }
     fun pxToDp(px: Float) = with(localDensity) { px.toDp() }
-
-    val canvasTopPadding = spToDp(textFontSize)
-    var canvasHeightPx by remember { mutableStateOf(0f) }
-    var canvasWidthPx by remember { mutableStateOf(0f) }
-    var barWidthPx by remember { mutableStateOf(0f) }
-    val canvasHeight by derivedStateOf { pxToDp(canvasHeightPx) }
-    val canvasWidth by derivedStateOf { pxToDp(canvasWidthPx) }
-    val barWidth by derivedStateOf { pxToDp(barWidthPx) }
-    val maxValue = barDataList.flatMap { listOf(it.goal, it.reached) }.maxOrNull()!!
-    val horizontalLinesYFractional =
-        if (horizontalLinesNumber > 0)
-            listOf(0f) + (1 until horizontalLinesNumber).map { 1f / horizontalLinesNumber * it }
-        else
-            emptyList()
-    val leftTextValues = (1..horizontalLinesNumber).map { maxValue / it }
+    fun dpToPx(dp: Dp) = with(localDensity) { dp.toPx() }
 
     @Composable
     fun ChartText(
@@ -82,6 +67,7 @@ fun BarChart(
         val size: Size,
         val barData: BarData? = null
     )
+
     fun DrawScope.drawRect(rect: Rect) {
         drawRect(
             color = rect.color,
@@ -91,24 +77,119 @@ fun BarChart(
         )
     }
 
-    var progressVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
-    var progressVerticalBarsOriginal by remember { mutableStateOf(emptyList<Rect>()) }
-    val progressSquares by derivedStateOf {
-        progressVerticalBars.mapIndexed { index, rect ->
+    data class Line(
+        val color: Color = solidColorDifference,
+        val alpha: Float = alphaColorDifference,
+        val start: Offset,
+        val end: Offset,
+        val strokeWidth: Float
+    )
+
+    fun DrawScope.drawLine(line: Line) {
+        drawLine(
+            color = line.color,
+            alpha = line.alpha,
+            start = line.start,
+            end = line.end,
+            strokeWidth = line.strokeWidth
+        )
+    }
+
+    val canvasTopPadding = spToDp(textFontSize)
+    var canvasHeightPx by remember { mutableStateOf(0f) }
+    val canvasHeight by derivedStateOf { pxToDp(canvasHeightPx) }
+    var canvasWidthPx by remember { mutableStateOf(0f) }
+    val canvasWidth by derivedStateOf { pxToDp(canvasWidthPx) }
+    val rectangleWidthPx by derivedStateOf {
+        canvasWidthPx / (barDataList.size * 2 - 1)
+    }
+    val rectangleWidth by derivedStateOf { pxToDp(rectangleWidthPx) }
+    val barDataMaxValue = barDataList.flatMap { listOf(it.goal, it.reached) }.maxOrNull()!!
+    val horizontalLinesYFractional by derivedStateOf {
+        if (horizontalLinesNumber > 0) {
+            listOf(0f) + (1 until horizontalLinesNumber).map { 1f / horizontalLinesNumber * it }
+        } else {
+            emptyList()
+        }
+    }
+    val horizontalLines by derivedStateOf {
+        horizontalLinesYFractional
+            .map { fraction -> fraction * canvasHeightPx }
+            .map { y ->
+                Line(
+                    color = solidColorDifference,
+                    start = Offset(0f, y),
+                    end = Offset(canvasWidthPx, y),
+                    strokeWidth = dpToPx(horizontalLineThickness),
+                    alpha = alphaColorDifference
+                )
+            }
+    }
+    val leftTextValues by derivedStateOf {
+        (1..horizontalLinesNumber).map { barDataMaxValue / it }
+    }
+    var reachedVerticalRectangles by remember { mutableStateOf(emptyList<Rect>()) }
+    var reachedVerticalRectanglesInitial by remember { mutableStateOf(emptyList<Rect>()) }
+    var goalVerticalRectangles by remember { mutableStateOf(emptyList<Rect>()) }
+    val squares by derivedStateOf {
+        reachedVerticalRectangles.mapIndexed { index, rect ->
             Rect(
                 color = solidColorDifference,
                 alpha = if(index == 0 || index == barDataList.size - 1 || rect.color == solidColorDifference) 1f else alphaColorDifference,
                 topLeft = Offset(rect.topLeft.x, 0f),
-                size = Size(barWidthPx, barWidthPx)
+                size = Size(rectangleWidthPx, rectangleWidthPx),
+                barData = null
             )
         }
     }
-    var goalVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
-    var highlightedProgressVerticalBar by remember { mutableStateOf<Rect?>(null) }
+    var highlightedVerticalRectangle by remember { mutableStateOf<Rect?>(null) }
+
+    LaunchedEffect(barDataList, canvasHeightPx) {
+        reachedVerticalRectangles = barDataList.mapIndexed { index, barData ->
+            if(barData.reached < barData.goal) {
+                val reachedBarHeightPx = barData.reached.toFloat() / barDataMaxValue * canvasHeightPx
+                Rect(
+                    color = solidColorUncompleted,
+                    topLeft = Offset(
+                        2 * rectangleWidthPx * index,
+                        canvasHeightPx - reachedBarHeightPx
+                    ),
+                    size = Size(rectangleWidthPx, reachedBarHeightPx),
+                    barData = barData
+                )
+            } else {
+                val barHeightPx = barData.reached.toFloat() / barDataMaxValue * canvasHeightPx
+                Rect(
+                    color = solidColorCompleted,
+                    topLeft = Offset(2 * rectangleWidthPx * index, canvasHeightPx - barHeightPx),
+                    size = Size(rectangleWidthPx, barHeightPx),
+                    barData = barData
+                )
+            }
+        }
+        reachedVerticalRectanglesInitial = reachedVerticalRectangles.toList()
+
+        goalVerticalRectangles = barDataList.mapIndexed { index, barData ->
+            if (barData.reached < barData.goal) {
+                val goalBarHeightPx = barData.goal.toFloat() / barDataMaxValue * canvasHeightPx
+                Rect(
+                    color = solidColorDifference,
+                    alpha = alphaColorDifference,
+                    topLeft = Offset(
+                        2 * rectangleWidthPx * index,
+                        canvasHeightPx - goalBarHeightPx
+                    ),
+                    size = Size(rectangleWidthPx, goalBarHeightPx)
+                )
+            } else {
+                null
+            }
+        }.filterNotNull()
+    }
 
     fun onCanvasTouchRelease() {
-        progressVerticalBars = progressVerticalBarsOriginal.toList()
-        highlightedProgressVerticalBar = null
+        reachedVerticalRectangles = reachedVerticalRectanglesInitial.toList()
+        highlightedVerticalRectangle = null
     }
 
     fun onCanvasTouch(x: Float) {
@@ -118,7 +199,7 @@ fun BarChart(
             } else if(x >= canvasWidthPx) {
                 return barDataList.size - 1
             } else {
-                progressVerticalBarsOriginal.forEachIndexed { index, rect ->
+                reachedVerticalRectanglesInitial.forEachIndexed { index, rect ->
                     if (x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width * 2) {
                         return index
                     }
@@ -133,9 +214,9 @@ fun BarChart(
                 size = rect.size.copy(height = canvasHeightPx)
             )
             .apply {
-                highlightedProgressVerticalBar = this.copy()
+                highlightedVerticalRectangle = this.copy()
             }
-        progressVerticalBars = progressVerticalBarsOriginal
+        reachedVerticalRectangles = reachedVerticalRectanglesInitial
             .toMutableList()
             .apply {
                 val rectIndex= getRectToHighlight(x)
@@ -144,49 +225,7 @@ fun BarChart(
     }
 
     @Composable
-    fun VerticalBarsCanvas(modifier: Modifier = Modifier) {
-        LaunchedEffect(barDataList, canvasHeightPx) {
-            progressVerticalBars = barDataList.mapIndexed { index, barData ->
-                if(barData.reached < barData.goal) {
-                    val reachedBarHeightPx = barData.reached.toFloat() / maxValue * canvasHeightPx
-                    Rect(
-                        color = solidColorUncompleted,
-                        topLeft = Offset(
-                            2 * barWidthPx * index,
-                            canvasHeightPx - reachedBarHeightPx
-                        ),
-                        size = Size(barWidthPx, reachedBarHeightPx),
-                        barData = barData
-                    )
-                } else {
-                    val barHeightPx = barData.reached.toFloat() / maxValue * canvasHeightPx
-                    Rect(
-                        color = solidColorCompleted,
-                        topLeft = Offset(2 * barWidthPx * index, canvasHeightPx - barHeightPx),
-                        size = Size(barWidthPx, barHeightPx),
-                        barData = barData
-                    )
-                }
-            }
-            progressVerticalBarsOriginal = progressVerticalBars.toList()
-
-            goalVerticalBars = barDataList.mapIndexed { index, barData ->
-                if (barData.reached < barData.goal) {
-                    val goalBarHeightPx = barData.goal.toFloat() / maxValue * canvasHeightPx
-                    Rect(
-                        color = solidColorDifference,
-                        alpha = alphaColorDifference,
-                        topLeft = Offset(
-                            2 * barWidthPx * index,
-                            canvasHeightPx - goalBarHeightPx
-                        ),
-                        size = Size(barWidthPx, goalBarHeightPx)
-                    )
-                } else {
-                    null
-                }
-            }.filterNotNull()
-        }
+    fun VerticalRectangles(modifier: Modifier = Modifier) {
         Box(modifier = modifier) {
             val requestDisallowInterceptTouchEvent = remember { RequestDisallowInterceptTouchEvent() }
             Canvas(
@@ -211,34 +250,21 @@ fun BarChart(
             ) {
                 canvasHeightPx = size.height
                 canvasWidthPx = size.width
-                barWidthPx = canvasWidthPx / (barDataList.size * 2 - 1)
-                val horizontalLinesY = horizontalLinesYFractional.map { fraction -> fraction * canvasHeightPx }
-                //draw the horizontal lines
-                horizontalLinesY.forEach { y ->
-                    drawLine(
-                        color = solidColorDifference,
-                        start = Offset(0f, y),
-                        end = Offset(canvasWidthPx, y),
-                        strokeWidth = horizontalLineThickness.toPx(),
-                        alpha = alphaColorDifference
-                    )
-                }
-                progressVerticalBars.forEach { rect ->
-                    drawRect(rect)
-                }
-                goalVerticalBars.forEach { rect ->
-                    drawRect(rect)
-                }
+                horizontalLines.forEach(::drawLine)
+                reachedVerticalRectangles.forEach(::drawRect)
+                goalVerticalRectangles.forEach(::drawRect)
             }
 
-            highlightedProgressVerticalBar?.let { bar ->
+            highlightedVerticalRectangle?.let { bar ->
                 val cardWidth = 156.dp
                 Column(
                     modifier = Modifier
                         .offset(
                             x = with(localDensity) {
-                                (bar.topLeft.x + 4 * barWidthPx).toDp().takeIf { it + cardWidth <= canvasWidth }
-                                    ?: ((bar.topLeft.x - 4 * barWidthPx).toDp() - cardWidth)
+                                (bar.topLeft.x + 4 * rectangleWidthPx)
+                                    .toDp()
+                                    .takeIf { it + cardWidth <= canvasWidth }
+                                    ?: ((bar.topLeft.x - 4 * rectangleWidthPx).toDp() - cardWidth)
                             },
                             y = canvasHeight / 4
                         )
@@ -312,56 +338,66 @@ fun BarChart(
     }
 
     @Composable
-    fun SquaresCanvas(modifier: Modifier = Modifier) {
+    fun Squares(modifier: Modifier = Modifier) {
         Canvas(modifier) {
-            progressSquares.forEach { rect ->
+            squares.forEach { rect ->
                 drawRect(rect)
             }
         }
     }
 
-    Row(modifier = modifier) {
+    @Composable
+    fun StartTexts() {
         Box(
             modifier = Modifier.fillMaxHeight(),
             contentAlignment = Alignment.TopEnd
         ) {
-            //draw the left side texts (without the "0")
+            //draw the texts (without the "0")
             horizontalLinesYFractional.forEachIndexed { index, fraction ->
                 ChartText(
                     modifier = Modifier.offset(y = canvasHeight * fraction + canvasTopPadding * (1 / 4f)),
                     text = leftTextValues[index].toString(),
                 )
             }
-            //draw the left side "0" text
+            //draw the "0" text
             ChartText(
                 modifier = Modifier.offset(y = canvasHeight),
                 text = "0",
             )
         }
+    }
+
+    @Composable
+    fun StartEndTexts() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            ChartText(barDataList.firstOrNull()?.text ?: "")
+            ChartText(barDataList.lastOrNull()?.text ?: "")
+        }
+    }
+
+    Row(modifier = modifier) {
+        StartTexts()
         Spacer(modifier = Modifier.width(1.dp))
         Column {
-            VerticalBarsCanvas(
+            VerticalRectangles(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize()
                     .padding(top = canvasTopPadding)
             )
-            Spacer(modifier = Modifier.height(barWidth))
-            if (barWidth < squareVisibleMaxSizeThreshold) {
-                SquaresCanvas(
+            Spacer(modifier = Modifier.height(rectangleWidth))
+            if (rectangleWidth < squareVisibleMaxSizeThreshold) {
+                Squares(
                     modifier = Modifier
-                        .height(barWidth)
+                        .height(rectangleWidth)
                         .fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(barWidth))
+                Spacer(modifier = Modifier.height(rectangleWidth))
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ChartText(barDataList.firstOrNull()?.text ?: "")
-                ChartText(barDataList.lastOrNull()?.text ?: "")
-            }
+            StartEndTexts()
         }
     }
 }
