@@ -27,10 +27,11 @@ class TodayViewModel @Inject constructor(
     override fun handleEvents(event: TodayContract.Event) {
         when(event) {
             TodayContract.Event.NavigateToSettings -> navigateToSettings()
+            TodayContract.Event.Undo -> undo()
             is TodayContract.Event.SelectContainer -> selectContainer(event.containerId)
         }
     }
-
+    private val quantitiesAddedDeque = ArrayDeque<Quantity>()
     private val todayProgressFlow: Flow<DayProgress> = dayProgressRepository.getTodayProgress()
     private var todayProgress: DayProgress? = null
     init {
@@ -58,6 +59,19 @@ class TodayViewModel @Inject constructor(
             viewModelScope.launch {
                 dayProgressRepository.updateTodayProgress(newTodayProgress)
             }
+            quantitiesAddedDeque.addLast(quantityAdded)
+            setState { copy(undosAvailable = undosAvailable + 1) }
+        }
+    }
+
+    private fun undo() {
+        todayProgress?.let { todayProgress ->
+            val quantityToRemove = quantitiesAddedDeque.removeLast()
+            val newTodayProgress = with(todayProgress) { copy(quantity = quantity - quantityToRemove) }
+            viewModelScope.launch {
+                dayProgressRepository.updateTodayProgress(newTodayProgress)
+            }
+            setState { copy(undosAvailable = undosAvailable - 1) }
         }
     }
 

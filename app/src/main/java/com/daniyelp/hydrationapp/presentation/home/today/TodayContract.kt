@@ -10,6 +10,7 @@ import com.daniyelp.hydrationapp.data.model.QuantityUnit
 class TodayContract {
     sealed class Event : ViewEvent {
         object NavigateToSettings: Event()
+        object Undo: Event()
         data class SelectContainer(val containerId: Int): Event()
     }
 
@@ -17,7 +18,8 @@ class TodayContract {
         val unit: QuantityUnit,
         val dailyGoal: Quantity,
         val currentQuantity: Quantity,
-        val containers: List<Container> = emptyList()
+        val containers: List<Container> = emptyList(),
+        val undosAvailable: Int = 0
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

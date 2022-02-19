@@ -30,7 +30,7 @@ fun generateFakeDayProgressList(n: Int) =
 class FakeDayProgressRepository: DayProgressRepository {
     private val _dayProgressList = MutableLiveData(
         generateFakeDayProgressList(40).toMutableList().apply {
-            set(0, first().copy(quantity = Quantity(200, QuantityUnit.Milliliter)))
+            set(0, first().copy(quantity = Quantity(0, QuantityUnit.Milliliter)))
         }.toList()
     )
 

@@ -9,6 +9,7 @@ class Quantity(value: Int, unit: QuantityUnit) {
         (value * QuantityUnit.Milliliter.toAnotherRatio(unit)).toInt()
 }
 operator fun Quantity.plus(another: Quantity) = Quantity(this.getValue(QuantityUnit.Milliliter) + another.getValue(QuantityUnit.Milliliter), QuantityUnit.Milliliter)
+operator fun Quantity.minus(another: Quantity) = Quantity(this.getValue(QuantityUnit.Milliliter) - another.getValue(QuantityUnit.Milliliter), QuantityUnit.Milliliter)
 
 enum class QuantityUnit {
     Milliliter,

@@ -4,22 +4,24 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import com.daniyelp.hydrationapp.presentation.common.Leaves
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
@@ -42,6 +44,33 @@ fun TodayScreen(
                     Text(text = "Today's progress")
                 },
                 actions = {
+                    if(state.undosAvailable > 0) {
+                        Box {
+                            IconButton(onClick = { onSendEvent(TodayContract.Event.Undo) }) {
+                                Icon(
+                                    imageVector  = Icons.Default.Undo,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.high)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .align(Alignment.TopEnd)
+                                    .background(
+                                        color = MaterialTheme.colors.secondary,
+                                        shape = RoundedCornerShape(50)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = state.undosAvailable.toString(),
+                                    color = MaterialTheme.colors.onSecondary,
+                                    fontSize = with(LocalDensity.current) { 12.dp.toSp()}
+                                )
+                            }
+                        }
+                    }
                     IconButton(onClick = { onSendEvent(TodayContract.Event.NavigateToSettings) }) {
                         Icon(
                             imageVector  = Icons.Default.Settings,
