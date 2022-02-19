@@ -73,29 +73,76 @@ fun BarChart(
         )
     }
 
-    @Composable
-    fun VerticalBarsCanvas(modifier: Modifier = Modifier) {
-        //var highlight by remember { mutableStateOf(false) }
-        data class Rect(
-            val color: Color,
-            val alpha: Float = 1f,
-            val topLeft: Offset,
-            val size: Size,
-            val barData: BarData? = null
+    data class Rect(
+        val color: Color,
+        val alpha: Float = 1f,
+        val topLeft: Offset,
+        val size: Size,
+        val barData: BarData? = null
+    )
+    fun DrawScope.drawRect(rect: Rect) {
+        drawRect(
+            color = rect.color,
+            alpha = rect.alpha,
+            topLeft = rect.topLeft,
+            size = rect.size
         )
-        fun DrawScope.drawRect(rect: Rect) {
-            drawRect(
-                color = rect.color,
-                alpha = rect.alpha,
-                topLeft = rect.topLeft,
-                size = rect.size
+    }
+
+    var progressVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
+    var progressVerticalBarsOriginal by remember { mutableStateOf(emptyList<Rect>()) }
+    val progressSquares by derivedStateOf {
+        progressVerticalBars.mapIndexed { index, rect ->
+            Rect(
+                color = solidColorDifference,
+                alpha = if(index == 0 || index == barDataList.size - 1 || rect.color == solidColorDifference) 1f else alphaColorDifference,
+                topLeft = Offset(rect.topLeft.x, 0f),
+                size = Size(barWidthPx, barWidthPx)
             )
         }
-        var progressVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
-        var progressVerticalBarsOriginal by remember { mutableStateOf(emptyList<Rect>()) }
-        var goalVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
-        var highlightedProgressVerticalBar by remember { mutableStateOf<Rect?>(null) }
+    }
+    var goalVerticalBars by remember { mutableStateOf(emptyList<Rect>()) }
+    var highlightedProgressVerticalBar by remember { mutableStateOf<Rect?>(null) }
 
+    fun onCanvasTouchRelease() {
+        progressVerticalBars = progressVerticalBarsOriginal.toList()
+        highlightedProgressVerticalBar = null
+    }
+
+    fun onCanvasTouch(x: Float) {
+        fun getRectToHighlight(x: Float): Int {
+            if(x <= 0) {
+                return 0
+            } else if(x >= canvasWidthPx) {
+                return barDataList.size - 1
+            } else {
+                progressVerticalBarsOriginal.forEachIndexed { index, rect ->
+                    if (x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width * 2) {
+                        return index
+                    }
+                }
+            }
+            return -1
+        }
+        fun highlightRect(rect: Rect): Rect = rect
+            .copy(
+                color = solidColorDifference,
+                topLeft = rect.topLeft.copy(y = 0f),
+                size = rect.size.copy(height = canvasHeightPx)
+            )
+            .apply {
+                highlightedProgressVerticalBar = this.copy()
+            }
+        progressVerticalBars = progressVerticalBarsOriginal
+            .toMutableList()
+            .apply {
+                val rectIndex= getRectToHighlight(x)
+                set(rectIndex, highlightRect(get(rectIndex)))
+            }
+    }
+
+    @Composable
+    fun VerticalBarsCanvas(modifier: Modifier = Modifier) {
         LaunchedEffect(barDataList, canvasHeightPx) {
             progressVerticalBars = barDataList.mapIndexed { index, barData ->
                 if(barData.reached < barData.goal) {
@@ -150,45 +197,11 @@ fun BarChart(
                         when (event.action) {
                             MotionEvent.ACTION_DOWN,
                             MotionEvent.ACTION_MOVE -> {
-                                fun highlightRect(rect: Rect): Rect = rect
-                                    .copy(
-                                            color = solidColorDifference,
-                                            topLeft = rect.topLeft.copy(y = 0f),
-                                            size = rect.size.copy(height = canvasHeightPx)
-                                    )
-                                    .apply {
-                                        highlightedProgressVerticalBar = this.copy()
-                                    }
-
-                                val x = event.x
-
-                                if(x <= 0) {
-                                    progressVerticalBars = progressVerticalBarsOriginal
-                                        .toMutableList()
-                                        .apply {
-                                            set(0, highlightRect(progressVerticalBarsOriginal.first()))
-                                        }
-                                } else if(x >= canvasWidthPx) {
-                                    progressVerticalBars = progressVerticalBarsOriginal
-                                        .toMutableList()
-                                        .apply {
-                                            set(progressVerticalBarsOriginal.size - 1, highlightRect(progressVerticalBarsOriginal.last()))
-                                        }
-                                } else {
-                                    progressVerticalBars =
-                                        progressVerticalBarsOriginal.map { rect ->
-                                            if (x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width * 2) {
-                                                highlightRect(rect)
-                                            } else {
-                                                rect
-                                            }
-                                        }
-                                }
+                                onCanvasTouch(event.x)
                                 true
                             }
                             else -> {
-                                progressVerticalBars = progressVerticalBarsOriginal.toList()
-                                highlightedProgressVerticalBar = null
+                                onCanvasTouchRelease()
                                 false
                             }
                         }
@@ -295,13 +308,8 @@ fun BarChart(
     @Composable
     fun SquaresCanvas(modifier: Modifier = Modifier) {
         Canvas(modifier) {
-            barDataList.forEachIndexed { index, _ ->
-                drawRect(
-                    color = solidColorDifference,
-                    alpha = if(index == 0 || index == barDataList.size - 1) 1f else alphaColorDifference,
-                    topLeft = Offset(2 * barWidthPx * index, 0f),
-                    size = Size(barWidthPx, barWidthPx)
-                )
+            progressSquares.forEach { rect ->
+                drawRect(rect)
             }
         }
     }
