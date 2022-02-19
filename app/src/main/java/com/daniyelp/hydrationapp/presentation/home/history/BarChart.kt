@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.takeOrElse
 
 data class BarData(val reached: Int, val goal: Int, val text: String, val unit: String)
 
@@ -51,6 +52,7 @@ fun BarChart(
     var canvasWidthPx by remember { mutableStateOf(0f) }
     var barWidthPx by remember { mutableStateOf(0f) }
     val canvasHeight by derivedStateOf { pxToDp(canvasHeightPx) }
+    val canvasWidth by derivedStateOf { pxToDp(canvasWidthPx) }
     val barWidth by derivedStateOf { pxToDp(barWidthPx) }
     val maxValue = barDataList.flatMap { listOf(it.goal, it.reached) }.maxOrNull()!!
     val horizontalLinesYFractional =
@@ -230,13 +232,17 @@ fun BarChart(
             }
 
             highlightedProgressVerticalBar?.let { bar ->
+                val cardWidth = 156.dp
                 Column(
                     modifier = Modifier
                         .offset(
-                            x = with(localDensity) { (bar.topLeft.x + 4 * barWidthPx).toDp() },
+                            x = with(localDensity) {
+                                (bar.topLeft.x + 4 * barWidthPx).toDp().takeIf { it + cardWidth <= canvasWidth }
+                                    ?: ((bar.topLeft.x - 4 * barWidthPx).toDp() - cardWidth)
+                            },
                             y = canvasHeight / 4
                         )
-                        .width(156.dp)
+                        .width(cardWidth)
                         .background(
                             color = bar.color,
                             shape = RoundedCornerShape(8.dp)
