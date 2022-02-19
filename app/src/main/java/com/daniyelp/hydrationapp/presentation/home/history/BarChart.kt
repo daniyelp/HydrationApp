@@ -1,6 +1,8 @@
 package com.daniyelp.hydrationapp.presentation.home.history
 
 import android.view.MotionEvent
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -260,12 +262,9 @@ fun BarChart(
                 Column(
                     modifier = Modifier
                         .offset(
-                            x = with(localDensity) {
-                                (bar.topLeft.x + 4 * rectangleWidthPx)
-                                    .toDp()
-                                    .takeIf { it + cardWidth <= canvasWidth }
-                                    ?: ((bar.topLeft.x - 4 * rectangleWidthPx).toDp() - cardWidth)
-                            },
+                            x = animateDpAsState(pxToDp (bar.topLeft.x + 4 * rectangleWidthPx).takeIf { it + cardWidth <= canvasWidth }
+                                ?: (pxToDp(bar.topLeft.x - 4 * rectangleWidthPx) - cardWidth)
+                            ).value,
                             y = canvasHeight / 4
                         )
                         .width(cardWidth)
