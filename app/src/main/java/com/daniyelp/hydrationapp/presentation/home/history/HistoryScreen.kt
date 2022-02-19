@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.daniyelp.hydrationapp.util.dateToString
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HistoryScreen(state: HistoryContract.State) {
     Scaffold(
@@ -46,11 +48,12 @@ fun HistoryScreen(state: HistoryContract.State) {
                             .fillMaxWidth()
                             .height(300.dp)
                             .padding(horizontal = 24.dp, vertical = 8.dp),
-                        barDataList = state.dayProgressList.map {
+                        barDataList = state.dayProgressList.mapIndexed { index, dayProgress ->
                             BarData(
-                                reached = it.quantity.getValue(state.unit),
-                                goal = it.goal.getValue(state.unit),
-                                text = dateToString(it.date, "dd.MM")
+                                reached = dayProgress.quantity.getValue(state.unit),
+                                goal = dayProgress.goal.getValue(state.unit),
+                                text = dateToString(dayProgress.date, "dd.MM"),
+                                unit = state.unit.toShortString()
                             )
                         }.reversed()
                     )
