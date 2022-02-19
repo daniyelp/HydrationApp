@@ -150,21 +150,39 @@ fun BarChart(
                         when (event.action) {
                             MotionEvent.ACTION_DOWN,
                             MotionEvent.ACTION_MOVE -> {
-                                val x = event.x
-                                progressVerticalBars = progressVerticalBarsOriginal.map { rect ->
-                                    if (x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width) {
-                                        rect
-                                            .copy(
-                                                color = solidColorDifference,
-                                                topLeft = rect.topLeft.copy(y = 0f),
-                                                size = rect.size.copy(height = canvasHeightPx)
-                                            )
-                                            .apply {
-                                                highlightedProgressVerticalBar = this.copy()
-                                            }
-                                    } else {
-                                        rect
+                                fun highlightRect(rect: Rect): Rect = rect
+                                    .copy(
+                                            color = solidColorDifference,
+                                            topLeft = rect.topLeft.copy(y = 0f),
+                                            size = rect.size.copy(height = canvasHeightPx)
+                                    )
+                                    .apply {
+                                        highlightedProgressVerticalBar = this.copy()
                                     }
+
+                                val x = event.x
+
+                                if(x <= 0) {
+                                    progressVerticalBars = progressVerticalBarsOriginal
+                                        .toMutableList()
+                                        .apply {
+                                            set(0, highlightRect(progressVerticalBarsOriginal.first()))
+                                        }
+                                } else if(x >= canvasWidthPx) {
+                                    progressVerticalBars = progressVerticalBarsOriginal
+                                        .toMutableList()
+                                        .apply {
+                                            set(progressVerticalBarsOriginal.size - 1, highlightRect(progressVerticalBarsOriginal.last()))
+                                        }
+                                } else {
+                                    progressVerticalBars =
+                                        progressVerticalBarsOriginal.map { rect ->
+                                            if (x >= rect.topLeft.x && x <= rect.topLeft.x + rect.size.width * 2) {
+                                                highlightRect(rect)
+                                            } else {
+                                                rect
+                                            }
+                                        }
                                 }
                                 true
                             }
