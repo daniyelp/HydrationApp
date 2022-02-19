@@ -1,5 +1,8 @@
 package com.daniyelp.hydrationapp.presentation.home.today
 
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -133,6 +136,14 @@ private fun Glass(
         color = Color.Transparent,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            val fillRatio by animateFloatAsState(
+                targetValue = fillRatio,
+                animationSpec = tween(
+                    durationMillis = 400,
+                    delayMillis = 0,
+                    easing = LinearOutSlowInEasing
+                )
+            )
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
