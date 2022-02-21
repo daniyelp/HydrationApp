@@ -32,6 +32,6 @@ abstract class UpdateQuantityViewModel: BaseViewModel<UpdateQuantityContract.Eve
     }
 
     private fun navigateUp() {
-        setEffect { UpdateQuantityContract.Effect.Navigation.Up }
+        sendEffect(UpdateQuantityContract.Effect.Navigation.Up)
     }
 }

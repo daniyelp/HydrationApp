@@ -31,7 +31,7 @@ class HistoryViewModel @Inject constructor(
             setState { copy(dayProgressList = it) }
         }.launchIn(viewModelScope)
         preferencesRepository.readPreferredUnit(viewModelScope) {
-            setState { viewState.value.copy(unit = it) }
+            setState { copy(unit = it) }
         }
     }
 }

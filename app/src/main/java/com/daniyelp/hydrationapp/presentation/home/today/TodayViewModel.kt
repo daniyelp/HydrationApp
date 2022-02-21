@@ -36,10 +36,10 @@ class TodayViewModel @Inject constructor(
     private var todayProgress: DayProgress? = null
     init {
         preferencesRepository.readPreferredUnit(viewModelScope) {
-            setState { viewState.value.copy(unit = it) }
+            setState { copy(unit = it) }
         }
         preferencesRepository.readContainers(viewModelScope) {
-            setState { viewState.value.copy(containers = it)}
+            setState { copy(containers = it)}
         }
         todayProgressFlow.onEach { todayProgress ->
             this.todayProgress = todayProgress
@@ -76,6 +76,6 @@ class TodayViewModel @Inject constructor(
     }
 
     private fun navigateToSettings() {
-        setEffect { TodayContract.Effect.Navigation.ToSettings }
+        sendEffect(TodayContract.Effect.Navigation.ToSettings)
     }
 }

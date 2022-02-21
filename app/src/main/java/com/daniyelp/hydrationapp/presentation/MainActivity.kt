@@ -92,7 +92,7 @@ private fun SettingsScreenDestination(navController: NavController) {
     val settingsViewModel = hiltViewModel<SettingsViewModel>()
     SettingsScreen(
         state = settingsViewModel.viewState.value,
-        onSendEvent = settingsViewModel::setEvent,
+        onSendEvent = settingsViewModel::sendEvent,
         effects = settingsViewModel.effect,
         onNavigationRequest = { navEffect ->
             when (navEffect) {
@@ -117,7 +117,7 @@ private fun DailyGoalScreenDestination(navController: NavController) {
         title = "Daily Goal",
         description = "Here you can set your hydration goal based on your preferred unit of measurement",
         state = updateDailyGoalViewModel.viewState.value,
-        onSendEvent = updateDailyGoalViewModel::setEvent,
+        onSendEvent = updateDailyGoalViewModel::sendEvent,
         effects = updateDailyGoalViewModel.effect,
         onNavigationRequest = { navEffect ->
             when (navEffect) {
@@ -136,7 +136,7 @@ private fun ContainerScreenDestination(containerId: Int, navController: NavContr
         title = "Container $containerId",
         description = "Here you can specify your container size so it would be easier for you to enter your daily liquid intake",
         state = updateContainerQuantityViewModel.viewState.value,
-        onSendEvent = updateContainerQuantityViewModel::setEvent,
+        onSendEvent = updateContainerQuantityViewModel::sendEvent,
         effects = updateContainerQuantityViewModel.effect,
         onNavigationRequest = { navEffect ->
             when (navEffect) {

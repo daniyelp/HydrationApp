@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.daniyelp.hydrationapp.presentation.BaseViewModel
 import com.daniyelp.hydrationapp.data.model.Quantity
 import com.daniyelp.hydrationapp.data.model.QuantityUnit
-import com.daniyelp.hydrationapp.data.repository.DayProgressRepository
 import com.daniyelp.hydrationapp.data.repository.impl.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -32,22 +31,22 @@ class SettingsViewModel @Inject constructor(
 
     init {
         preferencesRepository.readPreferredUnit(viewModelScope) {
-            setState { viewState.value.copy(unit = it) }
+            setState { copy(unit = it) }
         }
         preferencesRepository.readDailyGoal(viewModelScope) {
-            setState { viewState.value.copy(dailyGoal = it) }
+            setState { copy(dailyGoal = it) }
         }
         preferencesRepository.readContainers(viewModelScope) {
-            setState { viewState.value.copy(containers = it)}
+            setState { copy(containers = it)}
         }
     }
 
     private fun selectDailyGoal() {
-        setEffect { SettingsContract.Effect.Navigation.ToDailyGoal }
+        sendEffect(SettingsContract.Effect.Navigation.ToDailyGoal)
     }
 
     private fun selectContainer(containerId: Int) {
-        setEffect { SettingsContract.Effect.Navigation.ToContainer(containerId) }
+        sendEffect(SettingsContract.Effect.Navigation.ToContainer(containerId))
     }
 
     private fun selectUnit(unit: QuantityUnit) {
@@ -55,6 +54,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun navigateUp() {
-        setEffect { SettingsContract.Effect.Navigation.Up }
+        sendEffect(SettingsContract.Effect.Navigation.Up)
     }
 }

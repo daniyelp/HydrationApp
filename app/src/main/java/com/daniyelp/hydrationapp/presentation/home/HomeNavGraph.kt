@@ -1,7 +1,6 @@
 package com.daniyelp.hydrationapp.presentation.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -9,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -53,7 +51,7 @@ fun NavGraphBuilder.homeComposable(mainNavController: NavController) {
                     val todayViewModel = hiltViewModel<TodayViewModel>()
                     TodayScreen(
                         state = todayViewModel.viewState.value,
-                        onSendEvent = todayViewModel::setEvent,
+                        onSendEvent = todayViewModel::sendEvent,
                         effects = todayViewModel.effect,
                         onNavigationRequest = { navEffect ->
                             when (navEffect) {
